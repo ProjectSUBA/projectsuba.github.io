@@ -1,0 +1,23 @@
+# Security headers for Cloudflare Pages.
+# This file is copied verbatim into the build output (out/_headers) and applied
+# by Cloudflare to every response. Docs: https://developers.cloudflare.com/pages/configuration/headers/
+
+/*
+  # Stop the site being framed by other origins (clickjacking protection)
+  X-Frame-Options: DENY
+  # Don't let browsers MIME-sniff responses into a different content type
+  X-Content-Type-Options: nosniff
+  # Send only the origin (not the full path) when navigating to other sites
+  Referrer-Policy: strict-origin-when-cross-origin
+  # This site needs none of these device APIs — deny them outright
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=()
+  # Force HTTPS for two years, including subdomains (Cloudflare terminates TLS)
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  # Content Security Policy — fonts are self-hosted, so no external hosts are
+  # allowed. 'unsafe-inline' for scripts/styles is required by Next.js's static
+  # hydration payload (inline <script> and <style> with no server for nonces).
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; form-action 'self' mailto:; frame-ancestors 'none'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests
+
+# Long-cache the fingerprinted build assets (safe: filenames change on rebuild)
+/_next/static/*
+  Cache-Control: public, max-age=31536000, immutable
