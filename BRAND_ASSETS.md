@@ -1,93 +1,85 @@
 # Brand Assets Guide
 
-This document covers every visual asset shipped with the SUBA website: logos, favicons, OG images, and photo placeholders — what exists, where it lives, and how to replace placeholders with real photography.
+Every visual asset on the website: the logo, icons, the social-share image, and the photo placeholders, plus how to replace the placeholders with real photography.
 
-For editing written content instead (publications, testimonials, news, statistics), see **`CONTENT_GUIDE.md`**. For running or deploying the site, see **`README.md`**.
+For written content see **`CONTENT_GUIDE.md`**. For running or deploying the site see **`README.md`**.
 
 ---
 
-## 1. Logos (`/public/logos/`)
+## 1. The logo (`public/logos/`)
 
-| File | Format | Use |
-|---|---|---|
-| `suba-logo-full-colour.svg` | SVG | Full lockup (mark + wordmark) on light backgrounds — letterheads, print |
-| `suba-logo-white.svg` | SVG | Full lockup, white — dark green / photo backgrounds |
-| `suba-mark-colour.svg` | SVG | Icon only, full colour — favicons, app icons, small placements |
-| `suba-mark-white.svg` | SVG | Icon only, white — dark backgrounds |
-| `suba-mark-dark-green.svg` | SVG | Icon on dark green circle — social profile photo |
-| `suba-mark-colour-{128,256,512}.png` | PNG, transparent | Raster fallback, full colour |
-| `suba-mark-white-{128,256,512}.png` | PNG, transparent | Raster fallback, white |
-| `suba-mark-on-green-{128,256,512}.png` | PNG, dark green bg | Social media profile photo, app icon |
+| File | Use |
+|---|---|
+| `suba-logo.svg` | The official mark. Scalable, used throughout the site. |
+| `suba-logo.png` | Raster copy with a transparent background, for places that cannot take SVG (documents, email signatures). |
 
-All logos follow the brand book's anatomy: yellow arch (hope/sun), sun orb with monolith crown (Sun & Pansngiat Crown), blue Hill Myna wing, green S-curve sweep.
+These are the only logo files in the project, on purpose: older drafts of the mark were removed so the wrong version cannot be picked up by mistake. If you need another variant (for example a one-colour version for print), add it here and list it in this table.
 
-**Usage rules (from brand book, Section 04):**
-- Minimum clear space = width of the yellow arch
-- Minimum size: 100px digital, 2cm print
+**How the site uses it.** The `<SubaLogo>` component (`src/components/icons/SubaLogo.tsx`) shows the SVG. On dark green backgrounds it renders a white version automatically, so one file serves both.
+
+**Usage rules (brand book):**
+- Minimum clear space equals the width of the yellow arch
+- Minimum size 100px on screen, 2cm in print
 - Never stretch, recolour individual elements, add shadows, or separate the bird from the composition
 
-**The in-app `<SubaLogo>` React component** (`src/components/icons/SubaLogo.tsx`) renders the mark live as inline SVG — used in the header, footer, and anywhere the logo appears in the UI. The static files above are for external use (email signatures, social profiles, print, partner decks).
-
 ---
 
-## 2. Favicons & App Icons (`/public/` + `/src/app/favicon.ico`)
+## 2. Favicons and app icons
 
 | File | Purpose |
 |---|---|
-| `src/app/favicon.ico` | Multi-resolution ICO (16/32/48/64/128/256px) — auto-served at `/favicon.ico` by Next.js |
+| `src/app/favicon.ico` and `public/favicon.ico` | Classic multi-size icon |
 | `public/favicon.svg` | Modern browsers, scalable |
-| `public/icon-192.png`, `public/icon-512.png` | PWA / Android home screen icons |
-| `public/apple-touch-icon.png` | iOS home screen icon (180×180) |
-| `public/site.webmanifest` | PWA manifest referencing all icons above |
+| `public/icon-192.png`, `public/icon-512.png` | Android and installed-app icons |
+| `public/apple-touch-icon.png` | iPhone home-screen icon (180px, on white) |
+| `public/site.webmanifest` | Installed-app manifest that points at the icons above |
 
-All wired into `src/app/layout.tsx` → `metadata.icons` and `metadata.manifest`. No further setup needed — these work out of the box on Cloudflare Pages.
+All are wired up in `src/app/layout.tsx`. The icon links carry `?v=2`: browsers cache favicons very stubbornly, so if you ever change the logo again, bump that number (to `?v=3`) in `layout.tsx` so visitors fetch the new one.
 
----
-
-## 3. Open Graph / Social Share Image
-
-`public/images/og-image.png` (1200×630, PNG) — shown when the site is shared on WhatsApp, Twitter/X, LinkedIn, Facebook, iMessage, etc. Wired into `layout.tsx` → `metadata.openGraph.images` and `metadata.twitter.images`.
-
-There's also an editable source SVG at `public/images/og-image.svg` if you want to regenerate it with different text or colours (open in any vector editor, then export to PNG at 1200×630).
-
-**To replace with a photo-based OG image:** design a 1200×630 image with the SUBA logo + a strong photograph (e.g. a clean-up drive or hills landscape), keep text large and high-contrast, export as PNG, and replace `og-image.png`.
+**To regenerate them from a new logo**, resize `public/logos/suba-logo.png` to each size (trimming the empty margin first and centring it on a square canvas), keep the background transparent except for the Apple icon, and save the multi-size `.ico` with 16, 32 and 48px.
 
 ---
 
-## 4. Photography — Placeholder System
+## 3. Social-share image
 
-No real photographs were available, so every photo slot uses a visible, labelled placeholder (dashed border, camera icon, instructions) rather than a generic grey box or broken image icon. This makes it obvious to anyone editing the site exactly what photo is needed and where.
+`public/images/og-image.png` (1200 x 630) appears when a link to the site is shared on WhatsApp, Instagram, X, LinkedIn, Facebook or iMessage. It is set in `layout.tsx`.
 
-### Where placeholders live
+The current card shows the logo, the name and tagline, and the hills motif on dark green. To replace it with a photo-based card: design a 1200 x 630 image with the logo and a strong photograph, keep text large and high-contrast, export as PNG, and overwrite the file. Messaging apps cache these, so a new image can take a while to appear for links that were shared earlier.
 
-`/public/images/` mirrors the site structure:
+---
+
+## 4. Photography
+
+No real photographs exist yet, so every photo slot shows a labelled illustrated landscape (`<PhotoSlot>`). Each is easy to spot and each carries its brief, so whoever sources the photos knows what is needed.
+
+### Where photos go
+
+The `public/images/` folders mirror the site:
 
 ```
 images/
-├── hero/           — homepage hero background (optional, currently illustrated SVG)
-├── about/           — team photo, hills landscape, root bridge
-├── initiatives/      — one photo per initiative card
-├── events/           — news/update card thumbnails
-├── our-work/         — before/during/after photos for each documented campaign
-├── symboh/           — research/fieldwork photo
-├── comma/            — Khoh basket / recycling station photo
-└── team/             — individual profile photos
+├── hero/          optional homepage hero photo
+├── about/         team photo, hills landscape, root bridge
+├── initiatives/   one photo per initiative
+├── events/        news and update thumbnails
+├── our-work/      before, during and after photos for each campaign
+├── symboh/        research or fieldwork photo
+├── comma/         Khoh basket or recycling station
+└── team/          individual profile photos
 ```
 
-Each folder currently contains an SVG placeholder image (e.g. `hero-meghalaya.jpg.svg`) — a visual stand-in showing the exact dimensions and content direction needed.
+### How to swap a placeholder for a real photo
 
-### How to replace a placeholder with a real photo
-
-1. **Drop the real photo** into the matching folder, e.g. `public/images/initiatives/ward16-cleanup.jpg`
-2. **Find the `PhotoSlot` component** in the relevant page/component file — each one has a comment directly above it showing the exact `<SubaImage>` code to swap in
-3. **Replace** `<PhotoSlot .../>` with the commented `<SubaImage src="..." alt="..." .../>` line
-4. Rebuild (`npm run build`)
+1. Save the photo in the matching folder, for example `public/images/about/founders.jpg`.
+2. Find the `PhotoSlot` in the page or component. A comment directly above it shows the exact `SubaImage` code to use.
+3. Replace `<PhotoSlot ... />` with that `<SubaImage ... />`.
+4. Run `npm run build` to check.
 
 Example, from `src/components/home/WhoWeAre.tsx`:
 
 ```tsx
 // Before (placeholder):
-<PhotoSlot label="Team / founders photo" sublabel="..." aspectRatio="4/5" />
+<PhotoSlot label="Team / founders photo" aspectRatio="4/5" accentColor="#FEC110" />
 
 // After (real photo):
 <SubaImage
@@ -95,53 +87,48 @@ Example, from `src/components/home/WhoWeAre.tsx`:
   alt="SUBA founding team, Shillong"
   width={600}
   height={700}
-  caption="Photo credit: Name · Shillong, 2024"
+  caption="Photo credit: Name, Shillong, 2024"
 />
 ```
 
-### Photography direction (from the SUBA Brand Book, Section 09)
+Always write a real `alt` description, and credit the photographer in `caption` (the brand book requires it).
+
+**Keep photos light.** Aim for under 300 KB each: resize to about 1600px on the long edge and export at roughly 80% JPEG quality. The site does not resize images for you, so a 5 MB phone photo would be served at 5 MB.
+
+### Photography direction (brand book)
 
 **Do photograph:**
-- People in action — hands in soil, planting, cleaning, classrooms. Motion and doing, not posing.
-- The Meghalayan landscape — hills, forest, water, living root bridges. Real and unfiltered.
-- Youth at the centre — young people leading, as protagonists.
-- Traditional and modern together — Jainsem at a clean-up, Khoh basket at a recycling station.
-- Natural Meghalayan light — soft, diffused, golden, sometimes misty. No heavy filters.
+- People in action: hands in soil, planting, cleaning, classrooms. Doing, not posing.
+- The Meghalayan landscape: hills, forest, water, living root bridges. Real and unfiltered.
+- Young people leading, as protagonists.
+- Traditional and modern together: a Jainsem at a clean-up, a Khoh basket at a recycling station.
+- Natural light: soft, diffused, golden, sometimes misty. No heavy filters.
 
 **Do not photograph:**
-- Generic stock imagery of people clearly not from Meghalaya
+- Generic stock imagery of people who are clearly not from Meghalaya
 - Poverty or suffering framing
 - Over-saturated or heavily filtered images
 - Ceremonies or sacred sites without explicit consent
-- Corporate or sterile environments
-
-Every placeholder's sublabel text reflects this direction (e.g. "candid · natural light · no filters") so whoever sources the photography has the brief built in.
+- Corporate or sterile settings
 
 ---
 
-## 5. The `<SubaImage>` Component
+## 5. The `<SubaImage>` component
 
-`src/components/ui/SubaImage.tsx` wraps `next/image` with:
-- Optional caption (use for photo credits — the brand book requires crediting photographers)
-- `fill` mode for backgrounds/hero use
-- Sensible defaults for static export (Cloudflare Pages compatible — `unoptimized: true` already set in `next.config.ts`)
-
-The same file exports `<PhotoSlot>`, the placeholder component described above. Once a section's real photo is ready, swap `PhotoSlot` for `SubaImage` — no other changes needed.
+`src/components/ui/SubaImage.tsx` wraps `next/image` with an optional caption (for credits) and a `fill` mode for backgrounds. It works with the static export: `unoptimized: true` is already set in `next.config.ts`. The same file exports `<PhotoSlot>`, the placeholder.
 
 ---
 
-## 6. Quick Reference: Where Every Placeholder Lives
+## 6. Where every placeholder lives
 
-| Page / Component | Placeholder count | What's needed |
+| Page or component | Slots | What is needed |
 |---|---|---|
-| `components/home/WhoWeAre.tsx` | 1 | Team/founders photo |
+| `components/home/WhoWeAre.tsx` | 1 | Team or founders photo |
 | `components/home/LatestUpdates.tsx` | 4 | One photo per news card |
 | `app/about/page.tsx` | 2 | Hills landscape, living root bridge |
 | `app/initiatives/page.tsx` | 4 | One photo per initiative |
-| `app/our-work/page.tsx` | 12 | Before/during/after × 4 documented campaigns |
-| `app/symboh/page.tsx` | 1 | Research/fieldwork photo |
-| `app/comma/page.tsx` | 1 | Khoh basket / recycling station |
+| `app/our-work/page.tsx` | 12 | Before, during and after for each of 4 campaigns |
+| `app/symboh/page.tsx` | 1 | Research or fieldwork photo |
+| `app/comma/page.tsx` | 1 | Khoh basket or recycling station |
 
-Total: **25 photo slots** across the site, all clearly marked and documented inline.
-
-There are also **6 avatar placeholders** inside the homepage Testimonials section — these don't use `PhotoSlot` (they're small circular icons), but follow the same idea: replace with real headshots once available, or leave as a generic icon if you'd rather not show photos of testimonial-givers.
+**25 slots in total**, each with its replacement code in a comment beside it.

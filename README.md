@@ -1,175 +1,162 @@
-# SUBA — Official Website
+# SUBA Website
 
 **Sustainable Urban and Bioregional Action Project**
-Shillong · Meghalaya · India · [projectsuba.in](https://projectsuba.in)
+Shillong, Meghalaya, India. Live at [projectsuba.github.io](https://projectsuba.github.io)
 
 ---
 
-## Start here
+## Which file do I need?
 
-This project has three documentation files, depending on what you need:
-
-| If you want to... | Read this |
+| If you want to... | Read |
 |---|---|
-| Edit text content — publications, testimonials, news, statistics, initiatives | **`CONTENT_GUIDE.md`** |
-| Replace the logo, favicon, or any photo on the site | **`BRAND_ASSETS.md`** |
-| Run the site locally, or deploy it to Cloudflare Pages | This file, below |
+| Edit text: publications, news, events, figures, initiatives | `CONTENT_GUIDE.md` |
+| Replace the logo, favicon, share image or any photo | `BRAND_ASSETS.md` |
+| Change the contact email, social links or site address | `src/lib/site.ts` (see "Settings" below) |
+| Run, check or deploy the site | This file |
 
-If you are not a developer, you will most likely only ever need `CONTENT_GUIDE.md` and `BRAND_ASSETS.md`. This README is for whoever sets the site up and deploys it.
+If you are not a developer you will mostly need `CONTENT_GUIDE.md`. This README is for whoever looks after the site's setup.
 
 ---
 
 ## Stack
 
-- **Framework:** Next.js 16 (App Router, static export)
-- **Styling:** Tailwind CSS v4 (CSS-based config, no `tailwind.config.js`)
-- **Fonts:** Fraunces (display) · Inter (body) · JetBrains Mono (labels) — loaded via Google Fonts
-- **Hosting target:** Cloudflare Pages
+- **Framework:** Next.js 16 (App Router), exported as a fully static site
+- **Styling:** Tailwind CSS v4 (theme tokens live in `src/app/globals.css`)
+- **Fonts:** Fraunces, Inter and JetBrains Mono, self-hosted through `next/font` (visitors' browsers never contact Google)
+- **Hosting:** GitHub Pages, deployed by GitHub Actions. Cloudflare Pages also works (see "Security headers").
+
+There is no server and no database. That keeps hosting free and the attack surface tiny. The trade-off is that forms need either the visitor's email app or a free form service (see "Forms").
 
 ---
 
-## Local Development
+## Run it locally
 
 ```bash
-npm install
-npm run dev
-# Open http://localhost:3000
+npm install     # first time only
+npm run dev     # http://localhost:3000
 ```
 
-Any edit you save to a page or to `src/lib/data/index.ts` will appear automatically — no restart needed.
+Edits appear within a second or two.
 
----
-
-## Production Build
+### Check your work
 
 ```bash
-npm run build
-# Output: /out directory (static HTML/CSS/JS — no server needed)
+npm run check   # lint and type check
+npm run build   # full production build into /out
 ```
 
-This project uses Next.js's static export mode (`output: 'export'` in `next.config.ts`), which means the entire site compiles down to plain HTML/CSS/JS files. There is no backend, no database, and no server to maintain — which also means it's cheap and simple to host, but also means there's no built-in way to accept form submissions or store data server-side. The contact form currently opens the user's email client directly (`mailto:`); if you later want a "submit and we'll email you" form, you'll need to add a form service like Formspree, or move off static export.
+The deploy workflow runs the same checks, so a change that fails them is never published.
 
 ---
 
-## Deploy to Cloudflare Pages
+## Settings in one place: `src/lib/site.ts`
 
-### Option 1 — Connect Git repository (recommended)
+| Setting | What it does |
+|---|---|
+| `SITE_URL` | The site's public address. Drives the sitemap, canonical links and social-share URLs. |
+| `CONTACT_EMAIL` | The inbox used by every contact link and as the fallback for the forms. |
+| `SOCIAL_LINKS` | Instagram, X and LinkedIn links in the footer and contact page. |
+| `FORM_ENDPOINT` | Optional. Where the contact and newsletter forms send their data (see below). |
 
-1. Push this repo to GitHub or GitLab
-2. Log into [Cloudflare Dashboard](https://dash.cloudflare.com)
-3. Go to **Workers & Pages → Create → Pages → Connect to Git**
-4. Select your repository
-5. Set build settings:
-   - **Build command:** `npm run build`
-   - **Build output directory:** `out`
-   - **Environment variable:** `NODE_VERSION = 20`
-6. Click **Save and Deploy**
+### Forms
 
-Your site will be live at `your-project.pages.dev`. Every future push to your main branch will redeploy automatically.
+The contact form and the newsletter signup work out of the box with no account:
 
-### Option 2 — Direct upload (Wrangler CLI)
+- **Default (`FORM_ENDPOINT` empty):** the form opens the visitor's email app with their name, email and message already filled in, addressed to `CONTACT_EMAIL`. Free, but it only works for people who have an email app set up.
+- **One-click mode:** create a free form at [formspree.io](https://formspree.io), copy its URL (it looks like `https://formspree.io/f/abcdwxyz`) into `FORM_ENDPOINT`, and push. Submissions then land in your inbox and visitors never leave the page.
 
-```bash
-npm install -g wrangler
-npm run build
-wrangler pages deploy out --project-name=suba-website
-```
+### Getting your own domain
 
-### Custom domain
+1. Buy the domain, then add it in the repo under **Settings, Pages, Custom domain**.
+2. Change `SITE_URL` in `src/lib/site.ts` to match (for example `https://projectsuba.in`).
+3. Push. The sitemap, canonical links and share URLs all follow.
 
-In Cloudflare Pages dashboard: your project → **Custom Domains** → add `projectsuba.in` and `www.projectsuba.in`. Cloudflare handles SSL automatically.
+Remember to set up the email address too if it should match the domain.
 
 ---
 
-## File Structure
+## Deploying
+
+Pushing to `main` runs `.github/workflows/deploy.yml`, which lints, type checks, builds and publishes to GitHub Pages. It also runs every night, so date-based content (such as which events count as "upcoming") stays correct without a push.
+
+First-time setup only: in the repo go to **Settings, Pages, Build and deployment, Source** and choose **GitHub Actions**.
+
+Pull requests get the same checks but are never published.
+
+### Security headers
+
+`public/_headers` defines strict security headers (CSP, clickjacking protection, HSTS). **GitHub Pages ignores this file.** The headers only apply if you host on Cloudflare Pages (free): connect the repo there with build command `npm run build` and output directory `out`, and they switch on with no code changes.
+
+---
+
+## File structure
 
 ```
 src/
 ├── app/
-│   ├── layout.tsx                  # Root layout — fonts, SEO metadata, header, footer
-│   ├── page.tsx                    # Homepage — assembles all home sections
-│   ├── globals.css                 # Tailwind + SUBA colour/type theme
-│   ├── about/page.tsx
-│   ├── symboh/page.tsx             # Policy & Research Lab
-│   ├── comma/page.tsx              # Circular Economy Initiative
-│   ├── initiatives/page.tsx        # Active programmes overview
-│   ├── our-work/page.tsx           # Before/during/after photo documentation
-│   ├── publications/
-│   │   ├── page.tsx                # Filterable publications archive
-│   │   ├── PublicationsClient.tsx
-│   │   └── [slug]/page.tsx         # Individual publication detail pages (full text)
-│   ├── events/page.tsx
-│   ├── get-involved/page.tsx
-│   ├── contact/page.tsx
-│   ├── sitemap.ts
-│   └── robots.ts
+│   ├── layout.tsx            Root layout: fonts, metadata, structured data, skip link
+│   ├── template.tsx          Page-to-page fade
+│   ├── page.tsx              Homepage
+│   ├── globals.css           Theme tokens, shared styles
+│   ├── about/  symboh/  comma/  initiatives/  our-work/
+│   ├── events/  get-involved/  contact/  privacy/
+│   ├── publications/         List (with URL filters) and [slug] detail pages
+│   ├── not-found.tsx         Branded 404
+│   └── sitemap.ts  robots.ts
 ├── components/
-│   ├── layout/
-│   │   ├── Header.tsx               # Transparent-on-hero, solid-on-scroll nav
-│   │   └── Footer.tsx               # Full footer — newsletter, links, social
-│   ├── home/
-│   │   ├── Hero.tsx                 # Dark green hero, SVG Khasi hills landscape
-│   │   ├── WhoWeAre.tsx
-│   │   ├── WhatWeDo.tsx             # Six focus area cards
-│   │   ├── InitiativesSection.tsx   # Symboh + Comma wing cards
-│   │   ├── PublicationsSection.tsx  # Filterable preview, links to detail pages
-│   │   ├── DataInsights.tsx         # Impact statistics
-│   │   ├── Testimonials.tsx         # Quotes from partners/government/volunteers
-│   │   ├── LatestUpdates.tsx
-│   │   └── GetInvolvedSection.tsx
-│   ├── ui/
-│   │   └── SubaImage.tsx            # Real-photo wrapper + PhotoSlot placeholder
-│   └── icons/
-│       └── SubaLogo.tsx             # SUBA mark as inline SVG, used live in the UI
+│   ├── layout/               Header, Footer
+│   ├── home/                 Homepage sections
+│   ├── forms/                ContactForm, NewsletterForm
+│   ├── ui/                   PageHeader, Section, ButtonLink, Badge, Icons, Reveal, SubaImage
+│   └── icons/SubaLogo.tsx
 └── lib/
-    ├── types.ts                     # TypeScript types for all content
-    └── data/index.ts                # ALL editable content lives here — see CONTENT_GUIDE.md
+    ├── site.ts               Site-wide settings (edit this)
+    ├── forms.ts              Form submission logic
+    ├── ui.ts                 Colour tones, date formatting, helpers
+    ├── types.ts              TypeScript types for content
+    └── data/index.ts         ALL editable content (see CONTENT_GUIDE.md)
 ```
 
 ---
 
-## What's Real Content vs. Placeholder
+## What is still placeholder
 
-Everything on this site is structured and functional, but the following are placeholder content that must be replaced before the site is treated as live and public-facing:
+- **Photos.** Every photo slot shows an illustrated placeholder landscape with a label. See `BRAND_ASSETS.md` for the full list and how to swap each one.
+- **Testimonials.** The list is empty on purpose and the homepage section hides itself. Add real, consented quotes in `src/lib/data/index.ts` and it appears.
+- **Figures, publications, news and Our Work entries.** These are sample content. They have been made consistent with each other, but check every number and date against your real records before relying on them publicly.
+- **Publication PDFs.** None are hosted yet. Publications with full text are readable on their own page; two are marked "Full text coming soon".
 
-- **Logos** (`public/logos/`) — illustrative renderings of the SUBA mark based on the brand book description. Replace with the actual brand files. See `BRAND_ASSETS.md`.
-- **Photos** — every photo slot across the site is a clearly labelled placeholder (dashed border, camera icon), not a real image. See `BRAND_ASSETS.md` for the full list and swap-in instructions.
-- **Testimonials** (`src/lib/data/index.ts` → `testimonials`) — every entry currently says "Name Withheld — Update Before Publishing." These show the format only. Never publish a quote attributed to someone who didn't actually say it or agree to be named.
-- **Statistics, publications, news, and gallery entries** — illustrative numbers and write-ups showing the structure and tone the real content should follow. Replace with real data once available.
-
-None of this is hidden — `CONTENT_GUIDE.md` flags each of these explicitly with instructions for replacing them.
+Things the site does not have yet, because they need information only SUBA has: a team page, registration or legal details, a donation route, and Khasi-language content.
 
 ---
 
-## SUBA Colour Reference
+## Colour reference
 
 | Name | Hex | Use |
-|------|-----|-----|
-| Dark Green | `#1A5C2E` | Primary, backgrounds, depth |
-| Sea Green | `#259745` | Headings, CTAs, accents |
-| Mikado Yellow | `#FEC110` | Accent, CTAs, hope |
-| Sunshade | `#F6A225` | Flag, energy, secondary accent |
-| Blue Ivy | `#1F8EC8` | Peace, water, Symboh accent |
-| Warm Cream | `#FAF0C8` | Backgrounds, warmth |
-| Crimson | `#961416` | Heritage, bravery (use sparingly) |
-| Text | `#1A1A1A` | Body text (never pure black) |
+|---|---|---|
+| Forest | `#0F3D20` | Deepest backgrounds, text on yellow |
+| Dark Green | `#1A5C2E` | Primary, backgrounds, headings |
+| Sea Green | `#259745` | Large display accents, fills |
+| Mikado Yellow | `#FEC110` | Accent, primary buttons |
+| Sunshade | `#F6A225` | Secondary accent |
+| Blue Ivy | `#1F8EC8` | Water, Symboh accent |
+| Warm Cream | `#FAF0C8` / `#FDF8E7` | Backgrounds |
+| Crimson | `#961416` | Heritage, used sparingly |
+| Text | `#1A1A1A` | Body text, never pure black |
+
+**Text-safe versions.** The bright accents above fail contrast for small text on white. For small text and links use `green-ink` (`#1A6B33`), `blue-ink` (`#14688F`) and `amber-ink` (`#8A5200`), all defined in `globals.css`. Badges use the pairs in `src/lib/ui.ts`.
 
 ---
 
-## Future Features (Architecture Ready)
+## Future ideas
 
-The current architecture is designed to accommodate, without a redesign:
-
-- [ ] GIS map integration (Leaflet.js)
+- [ ] GIS map of drive sites (Leaflet)
 - [ ] Open data portal
-- [ ] Volunteer management forms (Airtable / Notion API, since this is a static site)
 - [ ] Event registration (Luma or similar)
-- [ ] Donation platform (Razorpay / Stripe)
-- [ ] Public dashboards (Recharts — already used internally for some stat displays)
-- [ ] Membership portal (would require moving off static export to a server-rendered setup)
+- [ ] Donation route (Razorpay or UPI link)
+- [ ] A content editor for non-developers (for example Decap CMS), so volunteers need not edit code
+- [ ] Privacy-friendly analytics (Cloudflare Web Analytics or GoatCounter), with an update to the privacy page
 
 ---
 
-*Published in Shillong, Meghalaya, India.*
-*For the ones who show up.*
-**VOL. I · 2025**
+*Published in Shillong, Meghalaya, India. For the ones who show up.*

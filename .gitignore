@@ -34,3 +34,6 @@ yarn-error.log*
 
 # One-off design mockup (not part of the site)
 /suba-homepage-mockup.html
+
+# TypeScript incremental build info
+*.tsbuildinfo

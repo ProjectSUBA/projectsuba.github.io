@@ -6,26 +6,18 @@ interface RevealProps {
   children: ReactNode;
   /** Render as a different element (default: div) */
   as?: ElementType;
-  /** Stagger delay in ms — handy inside mapped lists */
+  /** Stagger delay in ms, handy inside mapped lists */
   delay?: number;
   className?: string;
-  /** Play once (default) or every time it enters the viewport */
-  once?: boolean;
 }
 
 /**
- * Reveal — fades + slides its children up when scrolled into view.
- * Progressive enhancement: if JS/IntersectionObserver is unavailable, or the
- * user prefers reduced motion, content shows immediately (see .reveal in CSS
- * and the reduced-motion guard below).
+ * Reveal fades and slides its children up once, the first time they scroll into
+ * view. Reduced-motion users and visitors without JavaScript see the content
+ * immediately: that is handled in CSS (the reduced-motion block in globals.css
+ * and a <noscript> rule in the layout), so no extra script is needed here.
  */
-export function Reveal({
-  children,
-  as: Tag = 'div',
-  delay = 0,
-  className = '',
-  once = true,
-}: RevealProps) {
+export function Reveal({ children, as: Tag = 'div', delay = 0, className = '' }: RevealProps) {
   const ref = useRef<HTMLElement | null>(null);
   const [visible, setVisible] = useState(false);
   const Comp = Tag as ElementType;
@@ -34,29 +26,19 @@ export function Reveal({
     const node = ref.current;
     if (!node) return;
 
-    // Respect reduced-motion: show instantly, skip observing.
-    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
-      setVisible(true);
-      return;
-    }
-
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setVisible(true);
-            if (once) observer.unobserve(entry.target);
-          } else if (!once) {
-            setVisible(false);
-          }
-        });
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setVisible(true);
+          observer.disconnect();
+        }
       },
       { threshold: 0.12, rootMargin: '0px 0px -8% 0px' }
     );
 
     observer.observe(node);
     return () => observer.disconnect();
-  }, [once]);
+  }, []);
 
   return (
     <Comp

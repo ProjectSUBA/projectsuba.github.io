@@ -5,16 +5,14 @@ import { WhatWeDo } from '@/components/home/WhatWeDo';
 import { InitiativesSection } from '@/components/home/InitiativesSection';
 import { PublicationsSection } from '@/components/home/PublicationsSection';
 import { DataInsights } from '@/components/home/DataInsights';
-// Testimonials are hidden until real, consented quotes replace the placeholders.
-// To bring the section back: uncomment this import and the <Testimonials /> below,
-// after updating the quotes in src/lib/data/index.ts.
-// import { Testimonials } from '@/components/home/Testimonials';
+import { Testimonials } from '@/components/home/Testimonials';
 import { LatestUpdates } from '@/components/home/LatestUpdates';
 import { GetInvolvedSection } from '@/components/home/GetInvolvedSection';
 
 export const metadata: Metadata = {
-  title: 'SUBA — Sustainable Urban and Bioregional Action',
-  description: 'A youth-led civic, environmental, research, and community-action organisation based in Shillong, Meghalaya. Home to Symboh (Policy & Research Lab) and Comma (Circular Economy Initiative).',
+  title: 'SUBA: Sustainable Urban and Bioregional Action',
+  description:
+    'A youth-led civic, environmental, research and community-action organisation based in Shillong, Meghalaya. Home to Symboh, the policy and research lab, and Comma, the circular economy initiative.',
 };
 
 export default function HomePage() {
@@ -26,7 +24,8 @@ export default function HomePage() {
       <InitiativesSection />
       <PublicationsSection />
       <DataInsights />
-      {/* <Testimonials /> — hidden until real testimonials are ready */}
+      {/* Hides itself until real testimonials are added in src/lib/data */}
+      <Testimonials />
       <LatestUpdates />
       <GetInvolvedSection />
     </>

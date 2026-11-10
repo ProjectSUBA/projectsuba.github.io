@@ -1,21 +1,27 @@
-name: Deploy to GitHub Pages
+name: Check and deploy to GitHub Pages
 
-# Builds the Next.js static export and publishes it to GitHub Pages on every
-# push to main. No servers, no cost. First-time setup: in the repo go to
-# Settings → Pages → Build and deployment → Source: "GitHub Actions".
+# On every push to main this checks the code (lint and types), builds the static
+# site and publishes it to GitHub Pages. Pull requests get the same checks but are
+# never published. The site also rebuilds every day, so date-based content (such as
+# which events count as "upcoming") stays correct without anyone pushing a change.
+#
+# First-time setup: in the repo go to Settings, Pages, Build and deployment,
+# Source: "GitHub Actions".
 
 on:
   push:
     branches: [main]
-  workflow_dispatch: # lets you trigger a deploy manually from the Actions tab
+  pull_request:
+  schedule:
+    - cron: '15 0 * * *' # every day at 00:15 UTC (5:45 am in Shillong)
+  workflow_dispatch: # lets you run it by hand from the Actions tab
 
-# Permissions the deploy needs
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Only one deploy at a time; a newer push cancels an in-progress run
+# One deploy at a time; a newer run cancels an in-progress one
 concurrency:
   group: pages
   cancel-in-progress: true
@@ -30,21 +36,30 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - name: Install dependencies
         run: npm ci
 
+      - name: Lint
+        run: npm run lint
+
+      - name: Type check
+        run: npm run typecheck
+
       - name: Build static site
         run: npm run build
 
       - name: Upload artifact
+        if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./out
 
   deploy:
+    # Pull requests are checked above but never published.
+    if: github.event_name != 'pull_request'
     needs: build
     runs-on: ubuntu-latest
     environment:

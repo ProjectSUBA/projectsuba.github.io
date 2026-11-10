@@ -3,14 +3,14 @@ import { Fraunces, Inter, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
-import { SITE_URL } from '@/lib/site';
+import { CONTACT_EMAIL, SITE_FULL_NAME, SITE_URL, SOCIAL_LINKS } from '@/lib/site';
 
-// Self-hosted fonts — no render-blocking request to Google from the visitor's
-// browser (faster, no layout shift, privacy-friendly). CSS variables below are
-// referenced throughout the components as var(--font-fraunces) etc.
+// Self-hosted fonts: no request from the visitor's browser to Google, no layout
+// shift. Inter and JetBrains Mono are variable fonts (one file covers every
+// weight). Fraunces loads only the weights the design actually uses.
 const fraunces = Fraunces({
   subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700', '800', '900'],
+  weight: ['400', '500', '600', '700'],
   style: ['normal', 'italic'],
   variable: '--font-fraunces',
   display: 'swap',
@@ -18,42 +18,44 @@ const fraunces = Fraunces({
 
 const inter = Inter({
   subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
   variable: '--font-inter',
   display: 'swap',
 });
 
 const jetbrains = JetBrains_Mono({
   subsets: ['latin'],
-  weight: ['400', '500'],
   variable: '--font-jetbrains',
   display: 'swap',
 });
 
+const TITLE = 'SUBA: Sustainable Urban and Bioregional Action';
+const DESCRIPTION =
+  'A youth-led civic, environmental, research and community-action organisation based in Shillong, Meghalaya. Home to Symboh, the policy and research lab, and Comma, the circular economy initiative.';
+
 export const metadata: Metadata = {
-  title: {
-    default: 'SUBA — Sustainable Urban and Bioregional Action',
-    template: '%s · SUBA',
-  },
-  description: 'A youth-led civic, environmental, research, and community-action organisation based in Shillong, Meghalaya. Home to Symboh (Policy & Research Lab) and Comma (Circular Economy Initiative).',
-  keywords: ['SUBA', 'Sustainable Urban Bioregional Action', 'Shillong', 'Meghalaya', 'youth organisation', 'environmental research', 'Symboh', 'Comma', 'circular economy', 'policy lab', 'Khasi Hills'],
-  authors: [{ name: 'SUBA', url: 'https://projectsuba.in' }],
-  creator: 'SUBA',
-  publisher: 'Sustainable Urban and Bioregional Action Project',
   metadataBase: new URL(SITE_URL),
+  title: { default: TITLE, template: '%s · SUBA' },
+  description: DESCRIPTION,
+  applicationName: 'SUBA',
+  authors: [{ name: 'SUBA', url: SITE_URL }],
+  creator: 'SUBA',
+  publisher: SITE_FULL_NAME,
+  // Relative canonical: every page points at its own URL.
+  alternates: { canonical: './' },
+  referrer: 'strict-origin-when-cross-origin',
   openGraph: {
     type: 'website',
     locale: 'en_IN',
     url: SITE_URL,
-    title: 'SUBA — Sustainable Urban and Bioregional Action',
-    description: 'Youth-led civic, environmental, and research organisation based in Shillong, Meghalaya.',
+    title: TITLE,
+    description: 'Youth-led civic, environmental and research organisation based in Shillong, Meghalaya.',
     siteName: 'SUBA',
-    images: [{ url: '/images/og-image.png', width: 1200, height: 630, alt: 'SUBA — Sustainable Urban and Bioregional Action' }],
+    images: [{ url: '/images/og-image.png', width: 1200, height: 630, alt: 'SUBA, Sustainable Urban and Bioregional Action' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'SUBA — Sustainable Urban and Bioregional Action',
-    description: 'Youth-led civic, environmental, and research organisation. Shillong, Meghalaya.',
+    title: TITLE,
+    description: 'Youth-led civic, environmental and research organisation. Shillong, Meghalaya.',
     images: ['/images/og-image.png'],
   },
   robots: { index: true, follow: true },
@@ -76,12 +78,45 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
+// Structured data so search engines understand who SUBA is.
+const organisationJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'NGO',
+  name: 'SUBA',
+  legalName: SITE_FULL_NAME,
+  url: SITE_URL,
+  logo: `${SITE_URL}/logos/suba-logo.png`,
+  email: CONTACT_EMAIL,
+  description: DESCRIPTION,
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Shillong',
+    addressRegion: 'Meghalaya',
+    addressCountry: 'IN',
+  },
+  sameAs: SOCIAL_LINKS.map((s) => s.href),
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${fraunces.variable} ${inter.variable} ${jetbrains.variable}`}>
-      <body className="min-h-screen flex flex-col">
+      <head>
+        {/* Without JavaScript the scroll-reveal sections would stay invisible, so show them. */}
+        <noscript>
+          <style>{'.reveal{opacity:1!important;transform:none!important}.hero-in{opacity:1!important;animation:none!important}'}</style>
+        </noscript>
+        <script
+          type="application/ld+json"
+          // Safe: the JSON is built from constants in this repo. "<" is escaped so it cannot close the tag.
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organisationJsonLd).replace(/</g, '\\u003c') }}
+        />
+      </head>
+      <body className="flex min-h-screen flex-col">
+        <a href="#main" className="skip-link">Skip to main content</a>
         <Header />
-        <main className="flex-1">{children}</main>
+        <main id="main" tabIndex={-1} className="flex-1 outline-none">
+          {children}
+        </main>
         <Footer />
       </body>
     </html>

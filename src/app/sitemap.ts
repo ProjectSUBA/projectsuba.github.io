@@ -1,18 +1,38 @@
-import { MetadataRoute } from 'next';
+import type { MetadataRoute } from 'next';
+import { publications } from '@/lib/data';
 import { SITE_URL } from '@/lib/site';
+import { hasFullText } from '@/lib/ui';
+
 export const dynamic = 'force-static';
+
+const pages: { path: string; priority: number; changeFrequency: 'weekly' | 'monthly' | 'yearly' }[] = [
+  { path: '', priority: 1, changeFrequency: 'weekly' },
+  { path: '/about', priority: 0.9, changeFrequency: 'monthly' },
+  { path: '/symboh', priority: 0.9, changeFrequency: 'monthly' },
+  { path: '/comma', priority: 0.9, changeFrequency: 'monthly' },
+  { path: '/initiatives', priority: 0.8, changeFrequency: 'monthly' },
+  { path: '/our-work', priority: 0.8, changeFrequency: 'monthly' },
+  { path: '/publications', priority: 0.8, changeFrequency: 'weekly' },
+  { path: '/events', priority: 0.7, changeFrequency: 'weekly' },
+  { path: '/get-involved', priority: 0.8, changeFrequency: 'monthly' },
+  { path: '/contact', priority: 0.6, changeFrequency: 'yearly' },
+  { path: '/privacy', priority: 0.3, changeFrequency: 'yearly' },
+];
+
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = SITE_URL;
-  return [
-    { url: base, lastModified: new Date(), changeFrequency: 'weekly', priority: 1 },
-    { url: `${base}/about`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.9 },
-    { url: `${base}/symboh`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
-    { url: `${base}/comma`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
-    { url: `${base}/initiatives`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
-    { url: `${base}/our-work`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
-    { url: `${base}/publications`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
-    { url: `${base}/events`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.7 },
-    { url: `${base}/get-involved`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 },
-    { url: `${base}/contact`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.6 },
-  ];
+  const staticPages = pages.map((p) => ({
+    url: `${SITE_URL}${p.path}/`.replace(/\/\/$/, '/'),
+    changeFrequency: p.changeFrequency,
+    priority: p.priority,
+  }));
+
+  // Only publications with full text have their own page.
+  const publicationPages = publications.filter(hasFullText).map((pub) => ({
+    url: `${SITE_URL}/publications/${pub.slug}/`,
+    lastModified: new Date(pub.date),
+    changeFrequency: 'yearly' as const,
+    priority: 0.6,
+  }));
+
+  return [...staticPages, ...publicationPages];
 }

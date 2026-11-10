@@ -1,7 +1,9 @@
+import type { ReactNode } from 'react';
+
 // Minimal monoline icon set, so the site uses designed marks instead of emoji.
 // Each icon draws on a 24x24 grid and inherits the given stroke colour.
 
-type IconName =
+export type IconName =
   | 'leaf'
   | 'community'
   | 'search'
@@ -11,9 +13,15 @@ type IconName =
   | 'heart'
   | 'flask'
   | 'link'
-  | 'mail';
+  | 'mail'
+  | 'pin'
+  | 'cycle'
+  | 'sprout'
+  | 'chart'
+  | 'arrow'
+  | 'download';
 
-const PATHS: Record<IconName, React.ReactNode> = {
+const PATHS: Record<IconName, ReactNode> = {
   leaf: (
     <>
       <path d="M5 19C5 11 11 6 19 6c0 8-6 13-14 13Z" />
@@ -76,16 +84,52 @@ const PATHS: Record<IconName, React.ReactNode> = {
       <path d="M4 8l8 5 8-5" />
     </>
   ),
+  pin: (
+    <>
+      <path d="M12 21s6-5.2 6-10a6 6 0 0 0-12 0c0 4.8 6 10 6 10Z" />
+      <circle cx="12" cy="11" r="2.2" />
+    </>
+  ),
+  cycle: (
+    <>
+      <path d="M4 12a8 8 0 0 1 13.6-5.7L20 8.6" />
+      <path d="M20 4.5v4.1h-4.1" />
+      <path d="M20 12a8 8 0 0 1-13.6 5.7L4 15.4" />
+      <path d="M4 19.5v-4.1h4.1" />
+    </>
+  ),
+  sprout: (
+    <>
+      <path d="M12 20v-8" />
+      <path d="M12 12c0-3.5-2.5-5.5-6-5.5 0 3.5 2.5 5.5 6 5.5Z" />
+      <path d="M12 14c0-3 2.2-5 6-5 0 3-2.2 5-6 5Z" />
+    </>
+  ),
+  chart: (
+    <>
+      <path d="M4 20h16" />
+      <path d="M7 20v-6M12 20V6M17 20v-9" />
+    </>
+  ),
+  arrow: <path d="M3 12h16M13 6l6 6-6 6" />,
+  download: (
+    <>
+      <path d="M12 4v11M7.5 11l4.5 4.5 4.5-4.5" />
+      <path d="M5 20h14" />
+    </>
+  ),
 };
 
 export function Icon({
   name,
   color = 'currentColor',
   size = 22,
+  className,
 }: {
   name: IconName;
   color?: string;
   size?: number;
+  className?: string;
 }) {
   return (
     <svg
@@ -98,10 +142,9 @@ export function Icon({
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"
+      className={className}
     >
       {PATHS[name]}
     </svg>
   );
 }
-
-export type { IconName };

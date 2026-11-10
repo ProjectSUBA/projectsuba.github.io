@@ -1,33 +1,40 @@
 @import "tailwindcss";
 
 @theme {
-  /* ── SUBA brand palette ─────────────────────────────── */
-  --color-forest: #0F3D20;        /* deepest green — hero depth */
+  /* SUBA brand palette */
+  --color-forest: #0F3D20;
   --color-dark-green: #1A5C2E;
   --color-sea-green: #259745;
-  --color-leaf: #3DBE63;          /* brighter accent green */
+  --color-leaf: #3DBE63;
   --color-mikado: #FEC110;
   --color-sunshade: #F6A225;
   --color-blue-ivy: #1F8EC8;
   --color-cream: #FAF0C8;
   --color-cream-light: #FDF8E7;
   --color-crimson: #961416;
-  --color-heritage-gold: #F9AC1E;
   --color-suba-text: #1A1A1A;
   --color-suba-muted: #4A4A40;
 
-  /* ── Fonts (wired to next/font CSS variables) ───────── */
+  /* Text-safe variants of the brand colours (4.5:1 or better on white and cream).
+     Use these for small text and links; use the brighter brand colours for
+     large display type, fills and decoration. */
+  --color-green-ink: #1A6B33;
+  --color-blue-ink: #14688F;
+  --color-amber-ink: #8A5200;
+  --color-blue-fill: #17709F;
+
+  /* Fonts (wired to the next/font CSS variables set in layout.tsx) */
   --font-display: var(--font-fraunces), Georgia, serif;
   --font-body: var(--font-inter), system-ui, sans-serif;
   --font-mono: var(--font-jetbrains), 'Courier New', monospace;
 
-  /* ── Elevation ──────────────────────────────────────── */
+  /* Elevation */
   --shadow-soft: 0 1px 2px rgba(15, 61, 32, 0.04), 0 2px 8px rgba(15, 61, 32, 0.05);
   --shadow-card: 0 2px 4px rgba(15, 61, 32, 0.04), 0 8px 24px rgba(15, 61, 32, 0.07);
   --shadow-lift: 0 8px 16px rgba(15, 61, 32, 0.08), 0 24px 48px rgba(15, 61, 32, 0.12);
   --shadow-glow: 0 12px 40px rgba(254, 193, 16, 0.28);
 
-  /* ── Radii ──────────────────────────────────────────── */
+  /* Radii */
   --radius-xs: 3px;
   --radius-sm: 6px;
   --radius-md: 10px;
@@ -37,9 +44,9 @@
 
 @layer base {
   html {
-    /* Native (immediate) scrolling — CSS smooth-scroll makes the wheel feel laggy.
-       In-page anchor jumps still animate smoothly via the rule at the bottom. */
     -webkit-text-size-adjust: 100%;
+    /* Anchor jumps (like /get-involved#volunteer) should not hide under the fixed header */
+    scroll-padding-top: 5.5rem;
   }
 
   body {
@@ -54,7 +61,6 @@
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-fraunces), Georgia, serif;
     color: #1A5C2E;
-    font-feature-settings: "liga" 1, "dlig" 1;
   }
 
   ::selection {
@@ -63,30 +69,26 @@
   }
 }
 
-/* ── Typography helpers ───────────────────────────────── */
-.font-display { font-family: var(--font-fraunces), Georgia, serif; }
-.font-body { font-family: var(--font-inter), system-ui, sans-serif; }
-.font-mono-suba { font-family: var(--font-jetbrains), 'Courier New', monospace; }
-
+/* Typography helpers */
 .text-balance { text-wrap: balance; }
 .text-pretty { text-wrap: pretty; }
 
-/* Section label */
+/* Small mono label. 0.72rem (about 11.5px) is the smallest size used on the site. */
 .label-mono {
   font-family: var(--font-jetbrains), monospace;
-  font-size: 0.6875rem;
-  letter-spacing: 0.15em;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
-/* An eyebrow label with a leading tick — used above section headings */
+/* A label with a leading rule, used above section headings */
 .eyebrow {
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
   font-family: var(--font-jetbrains), monospace;
-  font-size: 0.6rem;
-  letter-spacing: 0.22em;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
 }
 .eyebrow::before {
@@ -94,27 +96,26 @@
   width: 1.6rem;
   height: 1px;
   background: currentColor;
-  opacity: 0.5;
+  opacity: 0.55;
 }
 
-/* ── Textures ─────────────────────────────────────────── */
-/* Subtle organic leaf texture for cream sections */
+/* Textures */
 .root-texture {
   background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%231A5C2E' fill-opacity='0.04'%3E%3Cpath d='M30 30 Q35 20 40 30 Q35 40 30 30zM20 15 Q25 5 30 15 Q25 25 20 15z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 }
 
-/* Fine film grain — layered over dark sections for depth. Pointer-events none. */
+/* Fine film grain over dark sections. Plain alpha blending only: blend modes on
+   a section-sized layer force the browser to re-blend every scroll frame. */
 .grain::after {
   content: '';
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.5;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+  opacity: 0.1;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* Soft radial glow blob — decorative accent behind headings/cards */
+/* Soft glow behind headings and cards. Static, so it is painted once. */
 .glow-blob {
   position: absolute;
   border-radius: 9999px;
@@ -122,10 +123,7 @@
   pointer-events: none;
 }
 
-/* ── Reveal-on-scroll ─────────────────────────────────── */
-/* One-shot entrance. No persistent will-change — leaving it on dozens of
-   elements creates dozens of compositor layers and hurts scroll performance.
-   The browser promotes automatically for the short duration of the transition. */
+/* Reveal on scroll. One-shot entrance with no persistent will-change. */
 .reveal {
   opacity: 0;
   transform: translate3d(0, 20px, 0);
@@ -137,18 +135,60 @@
   transform: translate3d(0, 0, 0);
 }
 
-/* ── Cards ────────────────────────────────────────────── */
+/* Components (in a layer so Tailwind utilities can still override them) */
+@layer components {
+  .card {
+    background: #ffffff;
+    border: 1px solid rgba(26, 92, 46, 0.1);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .field-label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #4A4A40;
+  }
+  .field {
+    width: 100%;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(26, 92, 46, 0.3);
+    background: #ffffff;
+    padding: 0.75rem 1rem;
+    font-size: 0.9375rem;
+    color: #1A1A1A;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .field::placeholder { color: #6B6B60; }
+  .field:focus {
+    outline: none;
+    border-color: #1A6B33;
+    box-shadow: 0 0 0 3px rgba(37, 151, 69, 0.22);
+  }
+  .field-dark {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.35);
+    color: #ffffff;
+  }
+  .field-dark::placeholder { color: rgba(255, 255, 255, 0.7); }
+  .field-dark:focus {
+    border-color: #FEC110;
+    box-shadow: 0 0 0 3px rgba(254, 193, 16, 0.25);
+  }
+}
+
 .card-lift {
   transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-              box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-              border-color 0.35s ease;
+              box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .card-lift:hover {
-  transform: translateY(-5px);
+  transform: translateY(-4px);
   box-shadow: var(--shadow-lift);
 }
 
-/* ── Buttons ──────────────────────────────────────────── */
+/* Buttons */
 .btn-primary {
   position: relative;
   overflow: hidden;
@@ -159,8 +199,6 @@
   box-shadow: var(--shadow-glow);
 }
 .btn-primary:active { transform: translateY(0); }
-
-/* Sheen sweep on primary buttons */
 .btn-sheen::before {
   content: '';
   position: absolute;
@@ -171,14 +209,33 @@
 }
 .btn-sheen:hover::before { left: 130%; }
 
-/* ── Focus ring ───────────────────────────────────────── */
+/* Focus ring: dark green on light surfaces, yellow on dark ones (.on-dark). */
+:root { --focus-ring: #1A6B33; }
+.on-dark { --focus-ring: #FEC110; }
 *:focus-visible {
-  outline: 2px solid #FEC110;
+  outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
   border-radius: 2px;
 }
 
-/* ── Scrollbar ────────────────────────────────────────── */
+/* Skip link: hidden until it receives keyboard focus */
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 100;
+  transform: translateY(-200%);
+  background: #FEC110;
+  color: #0F3D20;
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0.6rem 1rem;
+  border-radius: var(--radius-md);
+  transition: transform 0.2s ease;
+}
+.skip-link:focus { transform: translateY(0); outline-color: #0F3D20; }
+
+/* Scrollbar */
 ::-webkit-scrollbar { width: 10px; }
 ::-webkit-scrollbar-track { background: #FAF0C8; }
 ::-webkit-scrollbar-thumb {
@@ -188,7 +245,7 @@
 }
 ::-webkit-scrollbar-thumb:hover { background: #1A5C2E; }
 
-/* ── Nav underline effect ─────────────────────────────── */
+/* Nav underline */
 .nav-link { position: relative; }
 .nav-link::after {
   content: '';
@@ -201,7 +258,7 @@
 }
 .nav-link:hover::after, .nav-link.active::after { width: 100%; }
 
-/* ── Line clamp ───────────────────────────────────────── */
+/* Line clamp */
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -217,7 +274,7 @@
   overflow: hidden;
 }
 
-/* ── Keyframes ────────────────────────────────────────── */
+/* Keyframes */
 @keyframes heroIn {
   from { opacity: 0; transform: translateY(26px); }
   to { opacity: 1; transform: translateY(0); }
@@ -240,9 +297,9 @@
 }
 .animate-float { animation: floatSlow 7s ease-in-out infinite; }
 
-/* Page-to-page fade. fill-mode is "backwards" (not "both"/"forwards") on
-   purpose: once the animation ends no transform is left on the wrapper, which
-   would otherwise break position: sticky / fixed descendants. */
+/* Page-to-page fade. fill-mode is "backwards" on purpose: once the animation
+   ends no transform is left on the wrapper, which would otherwise break
+   position: sticky and fixed descendants. */
 @keyframes pageEnter {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
@@ -251,18 +308,13 @@
   animation: pageEnter 0.45s cubic-bezier(0.22, 1, 0.36, 1) backwards;
 }
 
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-/* Smooth scrolling for in-page anchor jumps only — this never affects the
-   mouse wheel / trackpad, so the page still feels native and immediate. */
+/* Smooth scrolling for in-page anchor jumps only. It never affects the mouse
+   wheel or trackpad, so the page still feels native. */
 @media (prefers-reduced-motion: no-preference) {
   html:focus-within { scroll-behavior: smooth; }
 }
 
-/* ── Reduced motion ───────────────────────────────────── */
+/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after {
@@ -271,4 +323,5 @@
     transition-duration: 0.01ms !important;
   }
   .reveal { opacity: 1 !important; transform: none !important; }
+  .hero-in { opacity: 1 !important; animation: none !important; }
 }

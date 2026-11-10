@@ -1,4 +1,6 @@
-// Types for SUBA website
+// Types for the SUBA website
+
+export type Wing = 'SUBA' | 'Symboh' | 'Comma';
 
 export interface Publication {
   id: string;
@@ -8,7 +10,8 @@ export interface Publication {
   category: 'Research Paper' | 'Policy Brief' | 'White Paper' | 'Newsletter' | 'Report' | 'Case Study';
   author: string;
   summary: string;
-  wing?: 'SUBA' | 'Symboh' | 'Comma';
+  wing?: Wing;
+  /** Link to a real, hosted PDF, for example '/documents/report.pdf'. Leave out if there is no PDF yet. */
   downloadUrl?: string;
   readTime?: string;
   tags?: string[];
@@ -29,16 +32,28 @@ export interface Initiative {
   tagline: string;
   description: string;
   wing: 'Symboh' | 'Comma';
-  status: 'Active' | 'Upcoming' | 'Completed';
+  status: 'Active' | 'Planned' | 'Completed';
   area: string;
   href: string;
   accentColor: string;
+}
+
+export interface Programme {
+  id: string;
+  title: string;
+  status: 'Active' | 'Planned' | 'Completed';
+  since?: string;
+  metric: string;
+  context: string;
+  description: string;
+  color: string;
 }
 
 export interface NewsItem {
   id: string;
   title: string;
   type: 'News' | 'Event' | 'Announcement' | 'Update';
+  /** ISO date, for example '2025-08-15' */
   date: string;
   description: string;
   location?: string;
@@ -49,7 +64,6 @@ export interface Stat {
   value: string;
   label: string;
   context?: string;
-  color?: string;
 }
 
 export interface Testimonial {
@@ -59,16 +73,15 @@ export interface Testimonial {
   role: string;
   affiliation?: string;
   category: 'Government' | 'Donor / Partner' | 'Volunteer' | 'Community Member' | 'Educator' | 'Media';
-  photoSlot?: boolean;
 }
 
-/** A single field-documented campaign — before/during/after, per the SUBA brand book Section 07 */
+/** A single field-documented campaign: before, during and after, per the SUBA brand book */
 export interface GalleryEntry {
   id: string;
   title: string;
   date: string;
   location: string;
-  wing: 'SUBA' | 'Symboh' | 'Comma';
+  wing: Wing;
   summary: string;
   stats: { label: string; value: string }[];
   before: { caption: string };
@@ -76,4 +89,9 @@ export interface GalleryEntry {
   after: { caption: string };
   reflection?: string;
   credits?: string[];
+}
+
+export interface ValueItem {
+  trait: string;
+  description: string;
 }

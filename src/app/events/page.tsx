@@ -1,61 +1,81 @@
 import type { Metadata } from 'next';
+import { PageHeader } from '@/components/ui/PageHeader';
+import { Section } from '@/components/ui/Section';
+import { Reveal } from '@/components/ui/Reveal';
+import { Badge } from '@/components/ui/Badge';
+import { Icon } from '@/components/ui/Icons';
+import { NewsletterForm } from '@/components/forms/NewsletterForm';
 import { newsItems } from '@/lib/data';
+import { formatDate, newsTone, todayISO } from '@/lib/ui';
 
-export const metadata: Metadata = { title: 'Events & Updates', description: 'News, events, and field updates from SUBA — Shillong, Meghalaya.' };
-
-const typeColors: Record<string,string> = { News:'#1F8EC8', Event:'#F6A225', Announcement:'#1A5C2E', Update:'#259745' };
+export const metadata: Metadata = {
+  title: 'Events and Updates',
+  description: 'News, events and field updates from SUBA, Shillong, Meghalaya.',
+};
 
 export default function EventsPage() {
-  const upcoming = newsItems.filter(n => n.type === 'Event');
-  const updates = newsItems.filter(n => n.type !== 'Event');
+  // Split by date, not by label. The site rebuilds every day (see the deploy
+  // workflow), so an event moves out of "upcoming" the day after it happens.
+  const today = todayISO();
+  const isUpcoming = (n: (typeof newsItems)[number]) => n.type === 'Event' && n.date >= today;
+  const upcoming = newsItems.filter(isUpcoming).sort((a, b) => a.date.localeCompare(b.date));
+  const earlier = newsItems.filter((n) => !isUpcoming(n)).sort((a, b) => b.date.localeCompare(a.date));
+
   return (
     <>
-      <div className="pt-28 pb-16" style={{backgroundColor:'#FAF0C8'}}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <span className="label-mono block mb-4" style={{color:'#259745',fontSize:'0.6rem',letterSpacing:'0.2em'}}>EVENTS & UPDATES</span>
-          <h1 style={{fontFamily:'var(--font-fraunces),Georgia,serif',fontSize:'clamp(2rem,5vw,3.5rem)',fontWeight:600,lineHeight:'1.1',color:'#1A5C2E'}}>What's happening<br/><span style={{fontStyle:'italic',color:'#259745'}}>in Shillong.</span></h1>
-        </div>
-      </div>
-      <section className="py-16" style={{backgroundColor:'white'}}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="mb-8" style={{fontFamily:'var(--font-fraunces)',fontSize:'1.5rem',color:'#1A5C2E',fontWeight:600}}>Upcoming events</h2>
-          {upcoming.length === 0 ? (
-            <p style={{fontFamily:'var(--font-inter)',color:'#4A4A40',fontSize:'0.9rem'}}>No upcoming events scheduled yet. Check back soon or subscribe to our newsletter.</p>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {upcoming.map(item => (
-                <div key={item.id} className="p-6 rounded-sm" style={{backgroundColor:'#FAF0C8',border:'1px solid rgba(26,92,46,0.12)'}}>
-                  <span className="px-2.5 py-0.5 rounded-sm text-white label-mono inline-block mb-4" style={{backgroundColor:typeColors[item.type],fontSize:'0.58rem',letterSpacing:'0.1em'}}>{item.type.toUpperCase()}</span>
-                  <h3 className="mb-2" style={{fontFamily:'var(--font-fraunces)',fontSize:'1rem',color:'#1A5C2E',fontWeight:600,lineHeight:'1.35'}}>{item.title}</h3>
-                  <p style={{fontFamily:'var(--font-inter)',fontSize:'0.85rem',lineHeight:'1.6',color:'#4A4A40'}}>{item.description}</p>
-                  {item.location && <p className="mt-3 text-xs" style={{fontFamily:'var(--font-inter)',color:'#4A4A40'}}>📍 {item.location}</p>}
-                  <p className="mt-2 text-xs" style={{fontFamily:'var(--font-inter)',color:'#4A4A40'}}>{new Date(item.date).toLocaleDateString('en-IN',{year:'numeric',month:'long',day:'numeric'})}</p>
-                </div>
-              ))}
+      <PageHeader tone="cream" eyebrow="Events and updates" title={<>What is happening <em>in Shillong.</em></>} />
+
+      <Section labelledBy="upcoming-heading">
+        <h2 id="upcoming-heading" className="mb-8 font-display text-2xl font-semibold">Upcoming events</h2>
+        {upcoming.length === 0 ? (
+          <div className="on-dark grid items-center gap-8 rounded-2xl bg-dark-green p-8 lg:grid-cols-2 lg:p-10">
+            <div>
+              <h3 className="mb-2 font-display text-xl font-semibold text-white">Nothing is scheduled right now</h3>
+              <p className="leading-relaxed text-white/80">
+                New dates are announced in the Field Letter first. Join the list and you will hear about the next drive or plantation before anyone else.
+              </p>
             </div>
-          )}
-        </div>
-      </section>
-      <section className="py-16" style={{backgroundColor:'#FAF0C8'}}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="mb-8" style={{fontFamily:'var(--font-fraunces)',fontSize:'1.5rem',color:'#1A5C2E',fontWeight:600}}>Recent updates</h2>
-          <div className="space-y-0 divide-y" style={{borderColor:'rgba(26,92,46,0.12)'}}>
-            {updates.map(item => (
-              <div key={item.id} className="py-6 flex flex-col sm:flex-row sm:items-start gap-4">
-                <div className="flex-shrink-0 sm:w-32">
-                  <span className="px-2 py-0.5 rounded-sm text-white label-mono inline-block mb-2" style={{backgroundColor:typeColors[item.type],fontSize:'0.55rem',letterSpacing:'0.1em'}}>{item.type.toUpperCase()}</span>
-                  <p style={{fontFamily:'var(--font-inter)',fontSize:'0.72rem',color:'#4A4A40'}}>{new Date(item.date).toLocaleDateString('en-IN',{year:'numeric',month:'short',day:'numeric'})}</p>
+            <NewsletterForm />
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {upcoming.map((item) => (
+              <Reveal key={item.id}>
+                <div className="card h-full bg-cream-light p-6">
+                  <Badge tone={newsTone[item.type]} className="mb-4">{item.type}</Badge>
+                  <h3 className="mb-2 font-display text-base font-semibold leading-snug">{item.title}</h3>
+                  <p className="text-[0.85rem] leading-relaxed text-suba-muted">{item.description}</p>
+                  {item.location && (
+                    <p className="mt-3 flex items-center gap-1.5 text-xs text-suba-muted"><Icon name="pin" size={14} />{item.location}</p>
+                  )}
+                  <time dateTime={item.date} className="mt-2 block text-xs font-medium text-suba-text">{formatDate(item.date)}</time>
                 </div>
-                <div className="flex-1">
-                  <h3 className="mb-2" style={{fontFamily:'var(--font-fraunces)',fontSize:'1rem',color:'#1A5C2E',fontWeight:600,lineHeight:'1.35'}}>{item.title}</h3>
-                  <p style={{fontFamily:'var(--font-inter)',fontSize:'0.875rem',lineHeight:'1.65',color:'#4A4A40'}}>{item.description}</p>
-                  {item.location && <p className="mt-2 text-xs" style={{fontFamily:'var(--font-inter)',color:'#4A4A40'}}>📍 {item.location}</p>}
-                </div>
-              </div>
+              </Reveal>
             ))}
           </div>
-        </div>
-      </section>
+        )}
+      </Section>
+
+      <Section tone="cream" labelledBy="earlier-heading">
+        <h2 id="earlier-heading" className="mb-8 font-display text-2xl font-semibold">Recent updates and past events</h2>
+        <ul className="divide-y divide-dark-green/12">
+          {earlier.map((item) => (
+            <li key={item.id} className="flex flex-col gap-4 py-6 sm:flex-row sm:items-start">
+              <div className="flex-shrink-0 sm:w-36">
+                <Badge tone={newsTone[item.type]} className="mb-2">{item.type}</Badge>
+                <time dateTime={item.date} className="block text-xs text-suba-muted">{formatDate(item.date, 'short')}</time>
+              </div>
+              <div className="flex-1">
+                <h3 className="mb-2 font-display text-base font-semibold leading-snug">{item.title}</h3>
+                <p className="text-[0.9rem] leading-relaxed text-suba-muted">{item.description}</p>
+                {item.location && (
+                  <p className="mt-2 flex items-center gap-1.5 text-xs text-suba-muted"><Icon name="pin" size={14} />{item.location}</p>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </Section>
     </>
   );
 }
