@@ -6,14 +6,14 @@ import { PublicationsView } from './PublicationsView';
 
 export const metadata: Metadata = {
   title: 'Publications',
-  description: 'Policy briefs, research papers, reports and newsletters from SUBA, grounded in primary data from Meghalaya.',
+  description: 'Policy briefs, research papers, reports and newsletters from SUBA, based on primary data from Shillong and the Khasi Hills.',
 };
 
 export default function PublicationsPage() {
   return (
     <>
-      <PageHeader eyebrow="Publications" title={<>Research and <em>publications.</em></>}>
-        Policy briefs, research papers, field reports and newsletters, grounded in primary data from Meghalaya.
+      <PageHeader label="Publications" title="Publications">
+        Policy briefs, research papers, reports and newsletters. Some are online in full and some as summaries of a longer document, and each says which.
       </PageHeader>
       {/* Reading the URL filters needs a Suspense boundary in a static export. The
           fallback is the full unfiltered list, so the HTML that search engines and

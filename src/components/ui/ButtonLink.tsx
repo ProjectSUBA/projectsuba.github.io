@@ -1,20 +1,17 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
-import { Icon } from '@/components/ui/Icons';
 
-type Variant = 'primary' | 'blue' | 'gold' | 'outline' | 'ghost';
+type Variant = 'primary' | 'gold' | 'outline' | 'ghost';
 
 const variants: Record<Variant, string> = {
-  // Solid dark green. For light backgrounds.
-  primary: 'bg-dark-green text-white hover:bg-forest',
-  // Solid blue, used for research and collaboration actions.
-  blue: 'bg-blue-fill text-white hover:bg-[#125c85]',
-  // Yellow with dark text. For dark backgrounds and key actions.
-  gold: 'btn-primary btn-sheen bg-mikado text-forest',
-  // Hairline border. For light backgrounds.
-  outline: 'border border-dark-green/35 text-dark-green hover:bg-white',
-  // Hairline white border. For dark backgrounds.
-  ghost: 'border border-white/40 text-white hover:bg-white/10',
+  // Solid dark green. For paper backgrounds.
+  primary: 'border-2 border-forest bg-forest text-white hover:bg-ink hover:border-ink',
+  // Yellow with dark text. For dark backgrounds.
+  gold: 'border-2 border-mikado bg-mikado text-forest hover:bg-white hover:border-white',
+  // Heavy outline. For paper backgrounds.
+  outline: 'border-2 border-ink text-ink hover:bg-ink hover:text-paper',
+  // Heavy white outline. For dark backgrounds.
+  ghost: 'border-2 border-white/80 text-white hover:bg-white hover:text-forest',
 };
 
 /** A link styled as a button. Internal paths use next/link; mailto and http links use a plain anchor. */
@@ -31,11 +28,11 @@ export function ButtonLink({
   arrow?: boolean;
   className?: string;
 }) {
-  const classes = `inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-sm font-semibold transition-colors ${variants[variant]} ${className}`;
+  const classes = `inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold transition-colors ${variants[variant]} ${className}`;
   const content = (
     <>
       {children}
-      {arrow && <Icon name="arrow" size={16} />}
+      {arrow && <span aria-hidden="true">→</span>}
     </>
   );
   const external = /^(https?:|mailto:|tel:)/.test(href);
@@ -43,11 +40,7 @@ export function ButtonLink({
   if (external) {
     const isWeb = href.startsWith('http');
     return (
-      <a
-        href={href}
-        className={classes}
-        {...(isWeb ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-      >
+      <a href={href} className={classes} {...(isWeb ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
         {content}
       </a>
     );

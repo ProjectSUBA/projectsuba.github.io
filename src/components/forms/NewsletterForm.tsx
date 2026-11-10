@@ -6,10 +6,11 @@ import { CONTACT_EMAIL, FORM_ENDPOINT } from '@/lib/site';
 
 type Status = 'idle' | 'sending' | 'sent' | 'mailto' | 'invalid' | 'error';
 
-/** Email signup for the SUBA Field Letter. Meant for dark green backgrounds. */
-export function NewsletterForm({ layout = 'stacked' }: { layout?: 'stacked' | 'inline' }) {
+/** Email signup for the SUBA Field Letter. `tone` matches the background it sits on. */
+export function NewsletterForm({ tone = 'dark', layout = 'stacked' }: { tone?: 'dark' | 'light'; layout?: 'stacked' | 'inline' }) {
   const [status, setStatus] = useState<Status>('idle');
   const id = useId();
+  const dark = tone === 'dark';
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -38,11 +39,9 @@ export function NewsletterForm({ layout = 'stacked' }: { layout?: 'stacked' | 'i
     }
   }
 
-  const row = layout === 'inline' ? 'sm:flex-row' : '';
-
   return (
     <form onSubmit={onSubmit} className="w-full">
-      <div className={`flex flex-col gap-2 ${row}`}>
+      <div className={`flex flex-col gap-2 ${layout === 'inline' ? 'sm:flex-row' : ''}`}>
         <label htmlFor={`${id}-email`} className="sr-only">Email address</label>
         <input
           id={`${id}-email`}
@@ -51,7 +50,7 @@ export function NewsletterForm({ layout = 'stacked' }: { layout?: 'stacked' | 'i
           required
           autoComplete="email"
           placeholder="you@example.com"
-          className="field field-dark flex-1"
+          className={`field flex-1 ${dark ? 'field-dark' : ''}`}
         />
         <div className="absolute -left-[9999px] h-0 w-0 overflow-hidden" aria-hidden="true">
           <label htmlFor={`${id}-gotcha`}>Leave this empty</label>
@@ -60,12 +59,14 @@ export function NewsletterForm({ layout = 'stacked' }: { layout?: 'stacked' | 'i
         <button
           type="submit"
           disabled={status === 'sending'}
-          className="rounded-lg bg-mikado px-5 py-3 text-sm font-semibold text-forest transition-colors hover:bg-sunshade disabled:opacity-60"
+          className={`border-2 px-5 py-3 text-sm font-semibold transition-colors disabled:opacity-60 ${
+            dark ? 'border-mikado bg-mikado text-forest hover:bg-white hover:border-white' : 'border-forest bg-forest text-white hover:bg-ink hover:border-ink'
+          }`}
         >
           {status === 'sending' ? 'Sending…' : 'Subscribe'}
         </button>
       </div>
-      <p className="mt-3 text-[0.8rem] leading-snug text-white/80" role="status" aria-live="polite">
+      <p className={`mt-3 text-[0.8rem] leading-snug ${dark ? 'text-white/85' : 'text-suba-muted'}`} role="status" aria-live="polite">
         {status === 'idle' &&
           (FORM_ENDPOINT
             ? 'We only use your email to send the Field Letter.'

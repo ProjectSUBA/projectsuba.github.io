@@ -101,10 +101,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${fraunces.variable} ${inter.variable} ${jetbrains.variable}`}>
       <head>
-        {/* Without JavaScript the scroll-reveal sections would stay invisible, so show them. */}
-        <noscript>
-          <style>{'.reveal{opacity:1!important;transform:none!important}.hero-in{opacity:1!important;animation:none!important}'}</style>
-        </noscript>
         <script
           type="application/ld+json"
           // Safe: the JSON is built from constants in this repo. "<" is escaped so it cannot close the tag.

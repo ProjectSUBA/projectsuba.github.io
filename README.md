@@ -11,7 +11,7 @@ Shillong, Meghalaya, India. Live at [projectsuba.github.io](https://projectsuba.
 |---|---|
 | Edit text: publications, news, events, figures, initiatives | `CONTENT_GUIDE.md` |
 | Replace the logo, favicon, share image or any photo | `BRAND_ASSETS.md` |
-| Change the contact email, social links or site address | `src/lib/site.ts` (see "Settings" below) |
+| Change the contact email, social links, site address or legal status | `src/lib/site.ts` (see "Settings" below) |
 | Run, check or deploy the site | This file |
 
 If you are not a developer you will mostly need `CONTENT_GUIDE.md`. This README is for whoever looks after the site's setup.
@@ -57,6 +57,7 @@ The deploy workflow runs the same checks, so a change that fails them is never p
 | `CONTACT_EMAIL` | The inbox used by every contact link and as the fallback for the forms. |
 | `SOCIAL_LINKS` | Instagram, X and LinkedIn links in the footer and contact page. |
 | `FORM_ENDPOINT` | Optional. Where the contact and newsletter forms send their data (see below). |
+| `LEGAL_STATUS` | SUBA's registration or organisational status, shown on the About page when filled in. |
 
 ### Forms
 
@@ -97,36 +98,42 @@ src/
 │   ├── layout.tsx            Root layout: fonts, metadata, structured data, skip link
 │   ├── template.tsx          Page-to-page fade
 │   ├── page.tsx              Homepage
-│   ├── globals.css           Theme tokens, shared styles
-│   ├── about/  symboh/  comma/  initiatives/  our-work/
-│   ├── events/  get-involved/  contact/  privacy/
-│   ├── publications/         List (with URL filters) and [slug] detail pages
+│   ├── globals.css           Design tokens and shared styles
+│   ├── about/  symboh/  comma/  get-involved/  contact/  privacy/  updates/
+│   ├── our-work/             Project index and [slug] project pages
+│   ├── publications/         Catalogue (with URL filters) and [slug] detail pages
 │   ├── not-found.tsx         Branded 404
 │   └── sitemap.ts  robots.ts
 ├── components/
 │   ├── layout/               Header, Footer
 │   ├── home/                 Homepage sections
 │   ├── forms/                ContactForm, NewsletterForm
-│   ├── ui/                   PageHeader, Section, ButtonLink, Badge, Icons, Reveal, SubaImage
+│   ├── ui/                   PageHeader, Section, ButtonLink, Tag, FieldPhoto
 │   └── icons/SubaLogo.tsx
 └── lib/
     ├── site.ts               Site-wide settings (edit this)
-    ├── forms.ts              Form submission logic
-    ├── ui.ts                 Colour tones, date formatting, helpers
-    ├── types.ts              TypeScript types for content
-    └── data/index.ts         ALL editable content (see CONTENT_GUIDE.md)
+    ├── photos.ts             Real photographs (edit this when you have photos)
+    ├── data/index.ts         ALL editable content (see CONTENT_GUIDE.md)
+    ├── nav.ts  forms.ts  ui.ts  types.ts
 ```
+
+---
+
+## Design language
+
+The site is built like a field journal, not a template. Paper and ink, ruled lines instead of cards, square corners, no shadows or gradients, and one decorative device: a yellow highlighter strip (`<mark>`) used sparingly. Symboh and Comma each have their own look (research paper versus campaign poster) on purpose. When you add something, follow the same logic: rules and tables before boxes, plain headings, and every number saying what it counts and when.
 
 ---
 
 ## What is still placeholder
 
-- **Photos.** Every photo slot shows an illustrated placeholder landscape with a label. See `BRAND_ASSETS.md` for the full list and how to swap each one.
-- **Testimonials.** The list is empty on purpose and the homepage section hides itself. Add real, consented quotes in `src/lib/data/index.ts` and it appears.
-- **Figures, publications, news and Our Work entries.** These are sample content. They have been made consistent with each other, but check every number and date against your real records before relying on them publicly.
-- **Publication PDFs.** None are hosted yet. Publications with full text are readable on their own page; two are marked "Full text coming soon".
+- **Photographs.** Every photo slot shows an empty frame marked "Photograph to be added". See `BRAND_ASSETS.md`: adding a photo is two steps and no page edits.
+- **The team and legal status.** The About page shows neither until you fill in `team` (`src/lib/data/index.ts`) and `LEGAL_STATUS` (`src/lib/site.ts`).
+- **Figures, publications and updates.** These are sample content. They have been made consistent with each other, but check every number and date against your real records before relying on them publicly.
+- **Publication PDFs.** None are hosted yet. Three publications are online as summaries (visitors can request the full document by email), one in full, and two are marked "Full text coming soon".
+- **Freshness.** The newest update is from 2025. A site that looks inactive loses trust, so add real updates when you have them.
 
-Things the site does not have yet, because they need information only SUBA has: a team page, registration or legal details, a donation route, and Khasi-language content.
+Things the site does not have yet, because they need information only SUBA has: a donation route and Khasi-language content.
 
 ---
 
@@ -134,17 +141,16 @@ Things the site does not have yet, because they need information only SUBA has: 
 
 | Name | Hex | Use |
 |---|---|---|
-| Forest | `#0F3D20` | Deepest backgrounds, text on yellow |
-| Dark Green | `#1A5C2E` | Primary, backgrounds, headings |
-| Sea Green | `#259745` | Large display accents, fills |
-| Mikado Yellow | `#FEC110` | Accent, primary buttons |
-| Sunshade | `#F6A225` | Secondary accent |
-| Blue Ivy | `#1F8EC8` | Water, Symboh accent |
-| Warm Cream | `#FAF0C8` / `#FDF8E7` | Backgrounds |
-| Crimson | `#961416` | Heritage, used sparingly |
-| Text | `#1A1A1A` | Body text, never pure black |
+| Ink | `#13281B` | Text and rules |
+| Paper | `#FAF5E4` / `#F0E7C9` | Page backgrounds |
+| Dark Green | `#1A5C2E` | Dark panels, footer |
+| Forest | `#0F3D20` | Buttons, text on yellow |
+| Mikado Yellow | `#FEC110` | The highlighter strip, active states, buttons on dark |
+| Blue (`blue-ink` `#14688F`) | | Symboh's colour |
+| Green (`green-ink` `#1A6B33`) | | Comma's colour |
+| Crimson | `#961416` | Rubber-stamp labels, used rarely |
 
-**Text-safe versions.** The bright accents above fail contrast for small text on white. For small text and links use `green-ink` (`#1A6B33`), `blue-ink` (`#14688F`) and `amber-ink` (`#8A5200`), all defined in `globals.css`. Badges use the pairs in `src/lib/ui.ts`.
+The bright brand colours (`#259745`, `#1F8EC8`, `#F6A225`) fail contrast for small text, so text uses the `-ink` versions defined in `globals.css`.
 
 ---
 

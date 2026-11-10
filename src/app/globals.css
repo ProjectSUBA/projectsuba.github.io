@@ -1,6 +1,18 @@
 @import "tailwindcss";
 
+/*
+  Design language: a field journal.
+  Paper and ink, ruled lines instead of cards, square corners, no shadows or
+  gradients. The one decorative device is the yellow highlighter strip (<mark>),
+  borrowed from hand-made campaign posters, and it is used sparingly.
+*/
+
 @theme {
+  /* Paper and ink */
+  --color-ink: #13281B;
+  --color-paper: #FAF5E4;
+  --color-paper-deep: #F0E7C9;
+
   /* SUBA brand palette */
   --color-forest: #0F3D20;
   --color-dark-green: #1A5C2E;
@@ -9,37 +21,20 @@
   --color-mikado: #FEC110;
   --color-sunshade: #F6A225;
   --color-blue-ivy: #1F8EC8;
-  --color-cream: #FAF0C8;
-  --color-cream-light: #FDF8E7;
   --color-crimson: #961416;
-  --color-suba-text: #1A1A1A;
   --color-suba-muted: #4A4A40;
 
-  /* Text-safe variants of the brand colours (4.5:1 or better on white and cream).
-     Use these for small text and links; use the brighter brand colours for
-     large display type, fills and decoration. */
+  /* Text-safe versions of the brand colours (4.5:1 or better on paper and white).
+     Use these for small text and links; use the brighter colours for fills and large type. */
   --color-green-ink: #1A6B33;
   --color-blue-ink: #14688F;
   --color-amber-ink: #8A5200;
   --color-blue-fill: #17709F;
 
-  /* Fonts (wired to the next/font CSS variables set in layout.tsx) */
+  /* Fonts (wired to the next/font variables set in layout.tsx) */
   --font-display: var(--font-fraunces), Georgia, serif;
   --font-body: var(--font-inter), system-ui, sans-serif;
   --font-mono: var(--font-jetbrains), 'Courier New', monospace;
-
-  /* Elevation */
-  --shadow-soft: 0 1px 2px rgba(15, 61, 32, 0.04), 0 2px 8px rgba(15, 61, 32, 0.05);
-  --shadow-card: 0 2px 4px rgba(15, 61, 32, 0.04), 0 8px 24px rgba(15, 61, 32, 0.07);
-  --shadow-lift: 0 8px 16px rgba(15, 61, 32, 0.08), 0 24px 48px rgba(15, 61, 32, 0.12);
-  --shadow-glow: 0 12px 40px rgba(254, 193, 16, 0.28);
-
-  /* Radii */
-  --radius-xs: 3px;
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 16px;
-  --radius-xl: 22px;
 }
 
 @layer base {
@@ -51,171 +46,82 @@
 
   body {
     font-family: var(--font-inter), system-ui, sans-serif;
-    color: #1A1A1A;
-    background: #ffffff;
+    color: #13281B;
+    background: #FAF5E4;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1, h2, h3, h4 {
     font-family: var(--font-fraunces), Georgia, serif;
-    color: #1A5C2E;
+    color: #13281B;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
   }
 
   ::selection {
     background: #FEC110;
     color: #0F3D20;
   }
+
+  /* The highlighter strip. Wrap a few words in <mark> in a heading. */
+  mark {
+    background: #FEC110;
+    color: #0F3D20;
+    padding: 0 0.14em;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
 }
 
-/* Typography helpers */
-.text-balance { text-wrap: balance; }
-.text-pretty { text-wrap: pretty; }
-
-/* Small mono label. 0.72rem (about 11.5px) is the smallest size used on the site. */
+/* Small mono label for datelines and metadata. 0.72rem (about 11.5px) is the smallest size on the site. */
 .label-mono {
   font-family: var(--font-jetbrains), monospace;
   font-size: 0.72rem;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
-/* A label with a leading rule, used above section headings */
-.eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  font-family: var(--font-jetbrains), monospace;
-  font-size: 0.72rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-}
-.eyebrow::before {
-  content: '';
-  width: 1.6rem;
-  height: 1px;
-  background: currentColor;
-  opacity: 0.55;
-}
+.text-pretty { text-wrap: pretty; }
 
-/* Textures */
-.root-texture {
-  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%231A5C2E' fill-opacity='0.04'%3E%3Cpath d='M30 30 Q35 20 40 30 Q35 40 30 30zM20 15 Q25 5 30 15 Q25 25 20 15z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-}
-
-/* Fine film grain over dark sections. Plain alpha blending only: blend modes on
-   a section-sized layer force the browser to re-blend every scroll frame. */
-.grain::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.1;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
-/* Soft glow behind headings and cards. Static, so it is painted once. */
-.glow-blob {
-  position: absolute;
-  border-radius: 9999px;
-  filter: blur(60px);
-  pointer-events: none;
-}
-
-/* Reveal on scroll. One-shot entrance with no persistent will-change. */
-.reveal {
-  opacity: 0;
-  transform: translate3d(0, 20px, 0);
-  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
-              transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.reveal.is-visible {
-  opacity: 1;
-  transform: translate3d(0, 0, 0);
-}
-
-/* Components (in a layer so Tailwind utilities can still override them) */
 @layer components {
-  .card {
-    background: #ffffff;
-    border: 1px solid rgba(26, 92, 46, 0.1);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-soft);
-  }
-
   .field-label {
     display: block;
     margin-bottom: 0.4rem;
     font-size: 0.85rem;
-    font-weight: 500;
-    color: #4A4A40;
+    font-weight: 600;
+    color: #13281B;
   }
   .field {
     width: 100%;
-    border-radius: var(--radius-md);
-    border: 1px solid rgba(26, 92, 46, 0.3);
+    border-radius: 0;
+    border: 1.5px solid #13281B;
     background: #ffffff;
-    padding: 0.75rem 1rem;
+    padding: 0.7rem 0.9rem;
     font-size: 0.9375rem;
-    color: #1A1A1A;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    color: #13281B;
   }
   .field::placeholder { color: #6B6B60; }
   .field:focus {
-    outline: none;
-    border-color: #1A6B33;
-    box-shadow: 0 0 0 3px rgba(37, 151, 69, 0.22);
+    outline: 3px solid #FEC110;
+    outline-offset: 0;
   }
   .field-dark {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.35);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.7);
     color: #ffffff;
   }
-  .field-dark::placeholder { color: rgba(255, 255, 255, 0.7); }
-  .field-dark:focus {
-    border-color: #FEC110;
-    box-shadow: 0 0 0 3px rgba(254, 193, 16, 0.25);
-  }
+  .field-dark::placeholder { color: rgba(255, 255, 255, 0.75); }
 }
 
-.card-lift {
-  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-              box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.card-lift:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lift);
-}
-
-/* Buttons */
-.btn-primary {
-  position: relative;
-  overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.25s ease, background-color 0.25s ease;
-}
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-glow);
-}
-.btn-primary:active { transform: translateY(0); }
-.btn-sheen::before {
-  content: '';
-  position: absolute;
-  top: 0; left: -120%;
-  width: 60%; height: 100%;
-  background: linear-gradient(100deg, transparent, rgba(255,255,255,0.55), transparent);
-  transition: left 0.6s ease;
-}
-.btn-sheen:hover::before { left: 130%; }
-
-/* Focus ring: dark green on light surfaces, yellow on dark ones (.on-dark). */
-:root { --focus-ring: #1A6B33; }
+/* Focus ring: dark on light surfaces, yellow on dark ones (.on-dark). */
+:root { --focus-ring: #13281B; }
 .on-dark { --focus-ring: #FEC110; }
 *:focus-visible {
-  outline: 2px solid var(--focus-ring);
+  outline: 3px solid var(--focus-ring);
   outline-offset: 2px;
-  border-radius: 2px;
 }
 
 /* Skip link: hidden until it receives keyboard focus */
@@ -230,33 +136,14 @@
   font-weight: 600;
   font-size: 0.9rem;
   padding: 0.6rem 1rem;
-  border-radius: var(--radius-md);
-  transition: transform 0.2s ease;
 }
 .skip-link:focus { transform: translateY(0); outline-color: #0F3D20; }
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 10px; }
-::-webkit-scrollbar-track { background: #FAF0C8; }
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(#259745, #1A5C2E);
-  border-radius: 999px;
-  border: 2px solid #FAF0C8;
-}
-::-webkit-scrollbar-thumb:hover { background: #1A5C2E; }
-
-/* Nav underline */
-.nav-link { position: relative; }
-.nav-link::after {
-  content: '';
-  position: absolute;
-  bottom: -2px; left: 0;
-  width: 0; height: 2px;
-  border-radius: 2px;
-  background: #FEC110;
-  transition: width 0.28s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.nav-link:hover::after, .nav-link.active::after { width: 100%; }
+::-webkit-scrollbar-track { background: #F0E7C9; }
+::-webkit-scrollbar-thumb { background: #1A5C2E; }
+::-webkit-scrollbar-thumb:hover { background: #0F3D20; }
 
 /* Line clamp */
 .line-clamp-2 {
@@ -266,46 +153,16 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-.line-clamp-3 {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-/* Keyframes */
-@keyframes heroIn {
-  from { opacity: 0; transform: translateY(26px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.hero-in {
-  opacity: 0;
-  animation: heroIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
-@keyframes mistDrift {
-  0% { transform: translateX(-4%); opacity: 0.5; }
-  50% { opacity: 0.85; }
-  100% { transform: translateX(4%); opacity: 0.5; }
-}
-.animate-mist { animation: mistDrift 18s ease-in-out infinite alternate; }
-
-@keyframes floatSlow {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-.animate-float { animation: floatSlow 7s ease-in-out infinite; }
 
 /* Page-to-page fade. fill-mode is "backwards" on purpose: once the animation
    ends no transform is left on the wrapper, which would otherwise break
    position: sticky and fixed descendants. */
 @keyframes pageEnter {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
 .page-enter {
-  animation: pageEnter 0.45s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  animation: pageEnter 0.35s ease-out backwards;
 }
 
 /* Smooth scrolling for in-page anchor jumps only. It never affects the mouse
@@ -322,6 +179,4 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-  .reveal { opacity: 1 !important; transform: none !important; }
-  .hero-in { opacity: 1 !important; animation: none !important; }
 }

@@ -6,19 +6,18 @@ export const metadata: Metadata = { title: 'Page not found' };
 
 export default function NotFound() {
   return (
-    <>
-      <PageHeader
-        eyebrow="Error 404"
-        title={<>This page has<br /><em>wandered off.</em></>}
-        actions={
-          <>
-            <ButtonLink href="/" variant="gold">Back to the homepage</ButtonLink>
-            <ButtonLink href="/publications" variant="ghost">Browse publications</ButtonLink>
-          </>
-        }
-      >
-        The link may be old, or the page may have moved. Try the homepage, or use the menu to find what you were after.
-      </PageHeader>
-    </>
+    <PageHeader
+      variant="green"
+      label="Error 404"
+      title="Page not found"
+      actions={
+        <>
+          <ButtonLink href="/" variant="gold" arrow>Back to the homepage</ButtonLink>
+          <ButtonLink href="/our-work" variant="ghost">See our work</ButtonLink>
+        </>
+      }
+    >
+      The link may be old, or the page may have moved. Try the homepage, or use the menu to find what you were after.
+    </PageHeader>
   );
 }

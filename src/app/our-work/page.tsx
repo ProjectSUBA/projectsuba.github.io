@@ -1,95 +1,63 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Section } from '@/components/ui/Section';
-import { ButtonLink } from '@/components/ui/ButtonLink';
-import { PhotoSlot } from '@/components/ui/SubaImage';
-import { Reveal } from '@/components/ui/Reveal';
-import { Badge } from '@/components/ui/Badge';
-import { Icon } from '@/components/ui/Icons';
-import { galleryEntries } from '@/lib/data';
-import { formatDate, wingTone } from '@/lib/ui';
+import { Tag } from '@/components/ui/Tag';
+import { projects } from '@/lib/data';
 
 export const metadata: Metadata = {
-  title: 'Our Work',
-  description: 'Photo documentation of SUBA campaigns and field work, before, during and after. Shillong, Meghalaya.',
+  title: 'Our work',
+  description: 'SUBA’s four projects in Shillong: the Ward 16 clean-ups, the Mawkhar plantation, an environmental education pilot and a mobility study.',
 };
-
-const statColor = { SUBA: 'text-dark-green', Symboh: 'text-blue-ink', Comma: 'text-green-ink' } as const;
 
 export default function OurWorkPage() {
   return (
     <>
-      <PageHeader eyebrow="Our work" title={<>Before, during <em>and after.</em></>}>
-        The before and after is part of every SUBA campaign, not an extra. It closes the loop. Here is the documented record of our field work, drive by drive.
+      <PageHeader label="Our work" title="Our work">
+        Four projects, all in Shillong so far. Each has its own record: what we did, what we counted and what we found.
       </PageHeader>
 
-      <Section>
-        <div className="space-y-16">
-          {galleryEntries.map((entry, idx) => (
-            <Reveal key={entry.id}>
-              <article className={idx > 0 ? 'border-t border-dark-green/10 pt-16' : ''} aria-labelledby={`work-${entry.id}`}>
-                <div className="mb-8 flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
-                  <div>
-                    <div className="mb-3 flex flex-wrap items-center gap-3">
-                      <Badge tone={wingTone[entry.wing]}>{entry.wing}</Badge>
-                      <time dateTime={entry.date} className="text-[0.8rem] text-suba-muted">{formatDate(entry.date)}</time>
-                    </div>
-                    <h2 id={`work-${entry.id}`} className="font-display text-2xl font-semibold">{entry.title}</h2>
-                    <p className="mt-1.5 flex items-center gap-1.5 text-sm text-suba-muted">
-                      <Icon name="pin" size={15} />
-                      {entry.location}
-                    </p>
+      <Section tone="white">
+        <ul>
+          {projects.map((project, i) => (
+            <li key={project.id} className={`grid gap-6 py-10 lg:grid-cols-12 lg:gap-10 ${i > 0 ? 'border-t border-ink/30' : ''}`}>
+              <div className="lg:col-span-3">
+                <Tag tone={project.wing === 'Symboh' ? 'blue' : 'green'}>{project.wing}</Tag>
+                <p className="label-mono mt-4 text-suba-muted">{project.place}</p>
+                <p className="label-mono mt-1 text-suba-muted">Since {project.since}</p>
+              </div>
+              <div className="lg:col-span-6">
+                <h2 className="font-display text-3xl font-bold leading-tight">
+                  <Link href={`/our-work/${project.id}`} className="hover:underline hover:decoration-2 hover:underline-offset-4">
+                    {project.title}
+                  </Link>
+                </h2>
+                <p className="mt-3 text-[1.0625rem] leading-relaxed text-suba-muted">{project.description[0]}</p>
+                <p className="mt-5">
+                  <Link href={`/our-work/${project.id}`} className="font-semibold underline decoration-2 underline-offset-4 hover:bg-mikado">
+                    Read the record →
+                  </Link>
+                </p>
+              </div>
+              <dl className="lg:col-span-3">
+                {project.facts.slice(0, 2).map((fact) => (
+                  <div key={fact.label} className="mb-4 flex flex-col">
+                    <dt className="label-mono order-2 mt-1 text-suba-muted">{fact.label}</dt>
+                    <dd className="order-1 font-display text-3xl font-bold leading-none">{fact.value}</dd>
                   </div>
-
-                  <dl className="flex flex-shrink-0 gap-6">
-                    {entry.stats.map((s) => (
-                      <div key={s.label} className="flex flex-col-reverse">
-                        <dt className="text-[0.75rem] text-suba-muted">{s.label}</dt>
-                        <dd className={`font-display text-2xl font-bold ${statColor[entry.wing]}`}>{s.value}</dd>
-                      </div>
-                    ))}
-                  </dl>
-                </div>
-
-                <p className="mb-8 max-w-2xl text-[0.9375rem] leading-[1.7]">{entry.summary}</p>
-
-                <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-                  {/*
-                    PHOTO SLOTS. Replace each with:
-                    <SubaImage src={`/images/our-work/${entry.id}-before.jpg`} alt={entry.before.caption} width={500} height={375} className="rounded-md" />
-                    (and the same for -during.jpg and -after.jpg)
-                  */}
-                  <div>
-                    <span className="label-mono mb-2 block text-suba-muted">Before</span>
-                    <PhotoSlot label="Before photo" sublabel={entry.before.caption} aspectRatio="4/3" accentColor="#961416" />
-                  </div>
-                  <div>
-                    <span className="label-mono mb-2 block text-suba-muted">During</span>
-                    <PhotoSlot label="During photo" sublabel={entry.during.caption} aspectRatio="4/3" accentColor="#F6A225" />
-                  </div>
-                  <div>
-                    <span className="label-mono mb-2 block text-suba-muted">After</span>
-                    <PhotoSlot label="After photo" sublabel={entry.after.caption} aspectRatio="4/3" accentColor="#259745" />
-                  </div>
-                </div>
-
-                {entry.reflection && (
-                  <blockquote className="mb-4 rounded-lg bg-cream-light p-5">
-                    <p className="font-display text-[0.9375rem] italic leading-relaxed text-dark-green">{entry.reflection}</p>
-                  </blockquote>
-                )}
-
-                {entry.credits && <p className="text-xs text-suba-muted">{entry.credits.join(' · ')}</p>}
-              </article>
-            </Reveal>
+                ))}
+              </dl>
+            </li>
           ))}
-        </div>
+        </ul>
       </Section>
 
-      <Section tone="cream">
-        <div className="text-center">
-          <h2 className="mb-5 font-display text-2xl font-semibold">Want to be part of the next one?</h2>
-          <ButtonLink href="/get-involved#volunteer">Volunteer with SUBA</ButtonLink>
+      <Section tone="deep">
+        <div className="grid gap-6 lg:grid-cols-12">
+          <h2 className="border-t-2 border-ink pt-3 font-display text-2xl font-bold lg:col-span-3">How we count</h2>
+          <p className="max-w-2xl text-[1.0625rem] leading-relaxed lg:col-span-9">
+            The figures come from SUBA’s own field records and surveys. Each project page says what a number counts and the dates it covers, so a figure for one drive or one group of saplings is never presented as a total for everything.
+          </p>
         </div>
       </Section>
     </>

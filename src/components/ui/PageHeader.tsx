@@ -1,55 +1,53 @@
 import type { ReactNode } from 'react';
 
+type Variant = 'paper' | 'green' | 'symboh' | 'comma';
+
 /**
- * The title band at the top of every interior page, so they all share one look.
- * Put the italic accent phrase inside <em> in the title, for example:
- *   title={<>What we are<br /><em>doing right now.</em></>}
+ * The opening band of an interior page. Each variant has its own personality:
+ *   paper   plain, for most pages
+ *   green   flat dark green, for the weightier pages
+ *   symboh  white and ruled, like a research paper's title block
+ *   comma   a solid green block with a big yellow highlight, energetic
+ * Wrap the words to highlight in <mark> inside the title.
  */
 export function PageHeader({
-  eyebrow,
+  label,
   title,
   children,
-  tone = 'green',
+  variant = 'paper',
   actions,
+  meta,
+  compact = false,
 }: {
-  eyebrow: string;
+  label: string;
   title: ReactNode;
   children?: ReactNode;
-  tone?: 'green' | 'cream';
+  variant?: Variant;
   actions?: ReactNode;
+  /** A line of small print under the title, such as place and date. */
+  meta?: ReactNode;
+  /** A smaller title, for long headings such as publication titles. */
+  compact?: boolean;
 }) {
-  const dark = tone === 'green';
+  const style = {
+    paper: { wrap: 'bg-paper border-b-2 border-ink', label: 'text-suba-muted', text: 'text-ink', intro: 'text-suba-muted' },
+    green: { wrap: 'bg-dark-green on-dark', label: 'text-white/80', text: 'text-white', intro: 'text-white/85' },
+    symboh: { wrap: 'bg-white border-t-[10px] border-blue-fill border-b-2 border-b-ink', label: 'text-blue-ink', text: 'text-ink', intro: 'text-suba-muted' },
+    comma: { wrap: 'bg-green-ink on-dark', label: 'text-white/85', text: 'text-white', intro: 'text-white/90' },
+  }[variant];
+
   return (
-    <header
-      className={`relative overflow-hidden pt-32 pb-14 lg:pt-40 lg:pb-20 ${dark ? 'grain on-dark' : 'root-texture'}`}
-      style={{
-        background: dark
-          ? 'linear-gradient(165deg, #1A5C2E 0%, #0F3D20 100%)'
-          : 'linear-gradient(180deg, #FDF8E7 0%, #FAF0C8 100%)',
-      }}
-    >
-      {dark && (
-        <div
-          className="glow-blob"
-          style={{ top: '-5rem', right: '4%', width: '22rem', height: '22rem', background: 'rgba(254,193,16,0.13)' }}
-          aria-hidden="true"
-        />
-      )}
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <span className={`eyebrow mb-5 ${dark ? 'text-white/75' : 'text-green-ink'}`}>{eyebrow}</span>
+    <header className={`${style.wrap} pt-28 pb-12 lg:pt-36 lg:pb-16`}>
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <p className={`label-mono mb-5 ${style.label}`}>{label}</p>
         <h1
-          className={`max-w-4xl font-display text-balance font-semibold leading-[1.08] tracking-[-0.015em] ${
-            dark ? 'text-white [&_em]:text-mikado' : 'text-dark-green [&_em]:text-sea-green'
-          } [&_em]:font-medium [&_em]:italic`}
-          style={{ fontSize: 'clamp(2.25rem, 5.5vw, 4rem)' }}
+          className={`max-w-4xl font-display font-bold leading-[1.02] tracking-[-0.03em] ${style.text}`}
+          style={{ fontSize: compact ? 'clamp(1.9rem, 4.4vw, 3.3rem)' : 'clamp(2.5rem, 7vw, 5rem)' }}
         >
           {title}
         </h1>
-        {children && (
-          <p className={`mt-5 max-w-2xl text-pretty text-base leading-relaxed lg:text-lg ${dark ? 'text-white/80' : 'text-suba-muted'}`}>
-            {children}
-          </p>
-        )}
+        {meta && <p className={`label-mono mt-5 ${style.label}`}>{meta}</p>}
+        {children && <p className={`mt-6 max-w-2xl text-pretty text-lg leading-relaxed ${style.intro}`}>{children}</p>}
         {actions && <div className="mt-8 flex flex-col gap-3 sm:flex-row">{actions}</div>}
       </div>
     </header>

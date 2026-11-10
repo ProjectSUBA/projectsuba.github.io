@@ -1,129 +1,117 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { PageHeader } from '@/components/ui/PageHeader';
-import { Section, SectionHeading } from '@/components/ui/Section';
+import { Section, SectionHead } from '@/components/ui/Section';
 import { ButtonLink } from '@/components/ui/ButtonLink';
-import { PhotoSlot } from '@/components/ui/SubaImage';
-import { Reveal } from '@/components/ui/Reveal';
-import { Badge } from '@/components/ui/Badge';
-import { Icon, type IconName } from '@/components/ui/Icons';
+import { Tag } from '@/components/ui/Tag';
 import { commaProgrammes, publications } from '@/lib/data';
-import { formatDate, hasFullText, inkFor } from '@/lib/ui';
+import { formatDate, hasFullText } from '@/lib/ui';
 
 export const metadata: Metadata = {
-  title: 'Comma: Circular Economy and Sustainability',
+  title: 'Comma: circular economy',
   description:
-    'Comma is SUBA’s circular economy initiative: plastic recovery, recycling, upcycling and community environmental action in Meghalaya.',
+    'Comma is SUBA’s circular economy initiative: clean-up drives, plantations and plastic recovery in Shillong, Meghalaya.',
 };
 
 const commaPublications = publications.filter((p) => p.wing === 'Comma');
 
-const commaStats = [
-  { value: '847 kg', label: 'waste recovered' },
-  { value: '420+ kg', label: 'plastic separated' },
-  { value: '312', label: 'trees planted' },
-  { value: '9', label: 'clean-up drives' },
+const tally = [
+  { value: '847 kg', label: 'of waste collected', note: 'Across 9 Ward 16 drives, January 2024 to May 2025.' },
+  { value: '312', label: 'saplings planted', note: 'At Mawkhar, across four plantation days.' },
+  { value: '9', label: 'clean-up drives', note: 'At the Ward 16 junction, roughly one every two months.' },
 ];
 
-const cycle: { icon: IconName; title: string; body: string }[] = [
-  { icon: 'recycle', title: 'Recover', body: 'What enters the waste stream is tracked, collected and separated.' },
-  { icon: 'cycle', title: 'Process', body: 'Material is directed to reuse, upcycling or recycling, not landfill.' },
-  { icon: 'sprout', title: 'Return', body: 'Value goes back to the community through products, skills and cleaner spaces.' },
-  { icon: 'chart', title: 'Report', body: 'Every drive produces public numbers, so the impact can be checked.' },
+const cycle = [
+  { title: 'Recover', body: 'What enters the waste stream is tracked, collected and sorted.' },
+  { title: 'Process', body: 'Material goes to reuse, upcycling or recycling, not landfill.' },
+  { title: 'Return', body: 'Value goes back to the community as products, skills and cleaner spaces.' },
+  { title: 'Report', body: 'Every drive is written up with numbers, so the impact can be checked.' },
 ];
 
 export default function CommaPage() {
   return (
     <>
-      <PageHeader tone="cream" eyebrow="A SUBA initiative · Circular economy" title="Comma">
-        SUBA’s Circular Economy and Sustainability Initiative. Plastic recovery, recycling, upcycling and community environmental action in Meghalaya.
+      <PageHeader variant="comma" label="Comma · SUBA’s circular economy initiative" title={<mark>Comma</mark>}>
+        Clean-ups, plantations and plastic recovery in Shillong, with every drive counted and written up afterwards.
       </PageHeader>
 
-      <Section tone="cream-light" className="py-12! lg:py-16!">
-        <dl className="mb-10 grid grid-cols-2 gap-6 border-y border-dark-green/15 py-6 sm:flex sm:flex-wrap sm:gap-10">
-          {commaStats.map((s) => (
-            <div key={s.label} className="flex flex-col-reverse">
-              <dt className="text-xs text-suba-muted">{s.label}</dt>
-              <dd className="font-display text-[1.75rem] font-bold text-green-ink">{s.value}</dd>
+      <section className="bg-mikado text-forest" aria-label="Comma in numbers">
+        <dl className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 md:grid-cols-3 lg:px-8 lg:py-14">
+          {tally.map((item) => (
+            <div key={item.label} className="flex flex-col">
+              <dt className="order-2 mt-2 text-lg font-semibold">{item.label}</dt>
+              <dd className="order-1 font-display font-bold leading-none tracking-[-0.04em] text-forest" style={{ fontSize: 'clamp(3.5rem, 8vw, 6rem)' }}>{item.value}</dd>
+              <dd className="order-3 mt-1 text-sm text-forest/85">{item.note}</dd>
             </div>
           ))}
         </dl>
-        {/*
-          PHOTO SLOT. Replace with:
-          <SubaImage src="/images/comma/khoh-basket.jpg" alt="Khoh basket, traditional zero-waste living" width={900} height={400} className="rounded-md" />
-        */}
-        <PhotoSlot label="Comma hero photo" sublabel="Khoh basket, recycling station, traditional and modern together" aspectRatio="16/6" accentColor="#259745" />
-      </Section>
+      </section>
 
-      <Section labelledBy="cycle-heading">
-        <SectionHeading eyebrow="The model" id="cycle-heading" title="How the cycle works" />
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <Section tone="white" labelledBy="cycle-heading">
+        <SectionHead label="The model" title="How the cycle works" id="cycle-heading" />
+        <ol className="grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
           {cycle.map((step, i) => (
-            <Reveal key={step.title} delay={i * 80}>
-              <div className="card h-full p-7">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-sea-green/10" aria-hidden="true">
-                  <Icon name={step.icon} color="#1A6B33" size={24} />
-                </div>
-                <h3 className="mb-2 font-display text-base font-semibold">{step.title}</h3>
-                <p className="text-[0.85rem] leading-relaxed text-suba-muted">{step.body}</p>
-              </div>
-            </Reveal>
+            <li key={step.title} className="border-t-4 border-green-ink pt-4">
+              <span className="font-display text-7xl font-bold leading-none text-green-ink" aria-hidden="true">{i + 1}</span>
+              <h3 className="mt-3 font-display text-2xl font-bold">{step.title}</h3>
+              <p className="mt-2 leading-relaxed text-suba-muted">{step.body}</p>
+            </li>
           ))}
-        </div>
+        </ol>
       </Section>
 
-      <Section id="programmes" tone="cream" labelledBy="programmes-heading">
-        <SectionHeading eyebrow="Programmes" id="programmes-heading" title="What Comma runs" />
-        <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
-          {commaProgrammes.map((prog, i) => (
-            <Reveal key={prog.id} delay={(i % 2) * 90}>
-              <div className="card h-full p-7">
-                <div className="mb-4 flex items-start justify-between gap-3">
-                  <Badge tone={prog.status === 'Active' ? 'green' : 'orange'}>{prog.status}</Badge>
+      <Section id="programmes" labelledBy="programmes-heading">
+        <SectionHead label="Programmes" title="What Comma runs" id="programmes-heading" />
+        <ul className="border-t border-ink/30">
+          {commaProgrammes.map((prog) => (
+            <li key={prog.id} className="grid gap-3 border-b border-ink/30 py-7 md:grid-cols-12 md:gap-8">
+              <div className="md:col-span-5">
+                <div className="mb-2 flex flex-wrap items-center gap-3">
+                  <Tag tone={prog.status === 'Active' ? 'green' : 'stamp'}>{prog.status}</Tag>
                   {prog.since && <span className="label-mono text-suba-muted">Since {prog.since}</span>}
                 </div>
-                <h3 className="mb-2 font-display text-lg font-semibold">{prog.title}</h3>
-                <div className="mb-3 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                  <span className="font-display text-[1.75rem] font-bold" style={{ color: inkFor(prog.color) }}>{prog.metric}</span>
-                  <span className="text-[0.8rem] text-suba-muted">{prog.context}</span>
-                </div>
-                <p className="text-sm leading-relaxed text-suba-muted">{prog.description}</p>
+                <h3 className="font-display text-2xl font-bold leading-snug">
+                  {prog.projectId ? <Link href={`/our-work/${prog.projectId}`} className="hover:underline hover:decoration-2 hover:underline-offset-4">{prog.title}</Link> : prog.title}
+                </h3>
               </div>
-            </Reveal>
+              <div className="md:col-span-3">
+                <p className="font-display text-3xl font-bold leading-none text-green-ink">{prog.metric}</p>
+                <p className="mt-1 text-[0.85rem] leading-snug text-suba-muted">{prog.context}</p>
+              </div>
+              <p className="leading-relaxed text-suba-muted md:col-span-4">{prog.description}</p>
+            </li>
           ))}
-        </div>
+        </ul>
       </Section>
 
       {commaPublications.length > 0 && (
-        <Section labelledBy="comma-research-heading">
-          <h2 id="comma-research-heading" className="mb-8 font-display text-2xl font-semibold">Comma research</h2>
-          <ul className="divide-y divide-dark-green/12">
+        <Section tone="deep" labelledBy="comma-research-heading">
+          <SectionHead label="Research" title="Comma research" id="comma-research-heading" />
+          <ul className="border-t border-ink/30">
             {commaPublications.map((pub) => (
-              <li key={pub.id} className="py-6">
-                <time dateTime={pub.date} className="mb-1 block text-xs text-suba-muted">{formatDate(pub.date, 'short')}</time>
-                <h3 className="mb-2 font-display text-base font-semibold leading-snug">
-                  {hasFullText(pub) ? (
-                    <Link href={`/publications/${pub.slug}`} className="transition-colors hover:text-green-ink">{pub.title}</Link>
-                  ) : (
-                    pub.title
-                  )}
-                </h3>
-                <p className="line-clamp-2 text-[0.85rem] leading-relaxed text-suba-muted">{pub.summary}</p>
+              <li key={pub.id} className="grid gap-1 border-b border-ink/30 py-5 sm:grid-cols-12 sm:gap-6">
+                <time dateTime={pub.date} className="label-mono pt-1 text-suba-muted sm:col-span-2">{formatDate(pub.date, 'short')}</time>
+                <div className="sm:col-span-10">
+                  <h3 className="font-display text-xl font-bold leading-snug">
+                    {hasFullText(pub) ? <Link href={`/publications/${pub.slug}`} className="hover:underline">{pub.title}</Link> : pub.title}
+                  </h3>
+                  <p className="mt-1 line-clamp-2 text-[0.95rem] leading-relaxed text-suba-muted">{pub.summary}</p>
+                </div>
               </li>
             ))}
           </ul>
         </Section>
       )}
 
-      <section className="on-dark bg-green-ink py-16">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-8 px-4 sm:px-6 lg:flex-row lg:px-8">
+      <section className="on-dark bg-green-ink text-white">
+        <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-6 px-4 py-14 sm:px-6 md:flex-row md:items-center lg:px-8">
           <div>
-            <h2 className="mb-2 font-display text-[1.75rem] font-semibold text-white">Join a clean-up drive</h2>
-            <p className="text-white/85">Bring gloves and water. We handle the rest.</p>
+            <h2 className="font-display text-3xl font-bold text-white">Join a clean-up drive</h2>
+            <p className="mt-2 text-white/90">Bring gloves and water. We handle the rest.</p>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row">
-            <ButtonLink href="/get-involved#volunteer" variant="gold">Volunteer with Comma</ButtonLink>
-            <ButtonLink href="/events" variant="ghost">Events</ButtonLink>
+            <ButtonLink href="/get-involved#volunteer" variant="gold" arrow>Volunteer with Comma</ButtonLink>
+            <ButtonLink href="/updates" variant="ghost">Updates</ButtonLink>
           </div>
         </div>
       </section>

@@ -20,6 +20,13 @@ export const CONTACT_EMAIL = 'projectsuba2024@gmail.com';
 /** Shown on the site as the place SUBA is based. */
 export const LOCATION = 'Shillong, Meghalaya, India';
 
+/**
+ * SUBA's legal or organisational status, shown on the About page. Leave empty
+ * until you have the exact wording. Examples: 'Registered society, reg. no. ...',
+ * 'Unregistered youth collective', 'A project of ...'. State the real position.
+ */
+export const LEGAL_STATUS = '';
+
 export const SOCIAL_LINKS = [
   { label: 'Instagram', short: 'IG', href: 'https://instagram.com/projectsuba' },
   { label: 'X (Twitter)', short: 'X', href: 'https://twitter.com/projectsuba' },

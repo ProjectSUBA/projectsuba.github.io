@@ -11,9 +11,14 @@ export interface Publication {
   author: string;
   summary: string;
   wing?: Wing;
+  /**
+   * What the page on this site contains. 'summary' means the page summarises a longer
+   * document (visitors are offered a way to request it); 'full' means the page is the
+   * whole piece. Leave out if there is no page yet.
+   */
+  kind?: 'summary' | 'full';
   /** Link to a real, hosted PDF, for example '/documents/report.pdf'. Leave out if there is no PDF yet. */
   downloadUrl?: string;
-  readTime?: string;
   tags?: string[];
   /** Full long-form content, as an array of section blocks. Renders on /publications/[slug]. */
   body?: PublicationSection[];
@@ -26,16 +31,28 @@ export interface PublicationSection {
   quote?: { text: string; attribution?: string };
 }
 
-export interface Initiative {
+/** One number with an honest definition: what it counts and the dates it covers. */
+export interface ProjectFact {
+  label: string;
+  value: string;
+  note: string;
+}
+
+export interface Project {
+  /** Becomes the page address: /our-work/<id> */
   id: string;
   title: string;
-  tagline: string;
-  description: string;
   wing: 'Symboh' | 'Comma';
+  place: string;
+  since: string;
   status: 'Active' | 'Planned' | 'Completed';
-  area: string;
-  href: string;
-  accentColor: string;
+  /** One sentence, shown in lists. */
+  summary: string;
+  /** Paragraphs for the project page. */
+  description: string[];
+  facts: ProjectFact[];
+  /** Slugs of related publications. */
+  publicationSlugs?: string[];
 }
 
 export interface Programme {
@@ -46,7 +63,8 @@ export interface Programme {
   metric: string;
   context: string;
   description: string;
-  color: string;
+  /** If the programme has its own project page. */
+  projectId?: string;
 }
 
 export interface NewsItem {
@@ -57,36 +75,23 @@ export interface NewsItem {
   date: string;
   description: string;
   location?: string;
-  href?: string;
+  /** Project id, if this update belongs to one. */
+  project?: string;
 }
 
-export interface Stat {
-  value: string;
-  label: string;
-  context?: string;
-}
-
-export interface Testimonial {
+/** A dated record from the field: before, during and after, per the SUBA brand book. */
+export interface FieldEntry {
   id: string;
-  quote: string;
-  name: string;
-  role: string;
-  affiliation?: string;
-  category: 'Government' | 'Donor / Partner' | 'Volunteer' | 'Community Member' | 'Educator' | 'Media';
-}
-
-/** A single field-documented campaign: before, during and after, per the SUBA brand book */
-export interface GalleryEntry {
-  id: string;
+  /** Project id this entry belongs to. */
+  project: string;
   title: string;
   date: string;
   location: string;
-  wing: Wing;
   summary: string;
   stats: { label: string; value: string }[];
-  before: { caption: string };
-  during: { caption: string };
-  after: { caption: string };
+  before: string;
+  during: string;
+  after: string;
   reflection?: string;
   credits?: string[];
 }
@@ -94,4 +99,21 @@ export interface GalleryEntry {
 export interface ValueItem {
   trait: string;
   description: string;
+}
+
+export interface LedgerItem {
+  value: string;
+  label: string;
+  /** What the number counts, and the dates it covers. */
+  note: string;
+  href: string;
+}
+
+export interface TeamMember {
+  name: string;
+  role: string;
+  /** One or two sentences. */
+  bio?: string;
+  /** Path to a photo, for example '/images/team/name.jpg'. */
+  photo?: string;
 }

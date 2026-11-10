@@ -1,18 +1,18 @@
 import type { ReactNode } from 'react';
-import { Reveal } from '@/components/ui/Reveal';
 
-type SectionTone = 'white' | 'cream' | 'cream-light' | 'green';
+type SectionTone = 'paper' | 'deep' | 'white' | 'green' | 'yellow';
 
 const toneBg: Record<SectionTone, string> = {
+  paper: 'bg-paper',
+  deep: 'bg-paper-deep',
   white: 'bg-white',
-  cream: 'bg-cream',
-  'cream-light': 'bg-cream-light',
-  green: 'bg-dark-green on-dark',
+  green: 'bg-dark-green text-white on-dark',
+  yellow: 'bg-mikado text-forest',
 };
 
-/** A full-width page section with the standard vertical rhythm and content width. */
+/** A full-width section with the standard vertical rhythm and content width. */
 export function Section({
-  tone = 'white',
+  tone = 'paper',
   id,
   className = '',
   children,
@@ -25,48 +25,47 @@ export function Section({
   labelledBy?: string;
 }) {
   return (
-    <section id={id} aria-labelledby={labelledBy} className={`relative py-16 lg:py-24 ${toneBg[tone]} ${className}`}>
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">{children}</div>
+    <section id={id} aria-labelledby={labelledBy} className={`${toneBg[tone]} ${className}`}>
+      <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8 lg:py-20">{children}</div>
     </section>
   );
 }
 
-/** Eyebrow, heading and optional intro for a section. Wrap the accent phrase in <em>. */
-export function SectionHeading({
-  eyebrow,
+/**
+ * The top of a section: a heavy rule, a small label on the left and an optional
+ * note or link on the right, like a newspaper section head. The heading goes below.
+ */
+export function SectionHead({
+  label,
+  aside,
   title,
   id,
-  children,
-  align = 'left',
   dark = false,
-  className = '',
+  children,
 }: {
-  eyebrow?: string;
-  title: ReactNode;
+  label: string;
+  aside?: ReactNode;
+  title?: ReactNode;
   id?: string;
-  children?: ReactNode;
-  align?: 'left' | 'center';
   dark?: boolean;
-  className?: string;
+  children?: ReactNode;
 }) {
-  const center = align === 'center';
   return (
-    <Reveal className={`mb-10 lg:mb-14 ${center ? 'mx-auto text-center' : ''} max-w-2xl ${className}`}>
-      {eyebrow && (
-        <span className={`eyebrow mb-4 ${dark ? 'text-white/75' : 'text-green-ink'}`}>{eyebrow}</span>
+    <div className="mb-10">
+      <div className={`flex items-baseline justify-between gap-4 border-t-2 pt-3 ${dark ? 'border-white/80' : 'border-ink'}`}>
+        <span className="label-mono">{label}</span>
+        {aside && <span className="text-sm">{aside}</span>}
+      </div>
+      {title && (
+        <h2
+          id={id}
+          className={`mt-6 max-w-3xl font-display font-bold leading-[1.08] ${dark ? 'text-white' : 'text-ink'}`}
+          style={{ fontSize: 'clamp(1.9rem, 4vw, 2.9rem)' }}
+        >
+          {title}
+        </h2>
       )}
-      <h2
-        id={id}
-        className={`font-display text-balance font-semibold leading-[1.15] tracking-[-0.01em] ${
-          dark ? 'text-white [&_em]:text-mikado' : 'text-dark-green [&_em]:text-sea-green'
-        } [&_em]:font-medium [&_em]:italic`}
-        style={{ fontSize: 'clamp(1.75rem, 3.6vw, 2.5rem)' }}
-      >
-        {title}
-      </h2>
-      {children && (
-        <p className={`mt-4 text-pretty text-base leading-relaxed ${dark ? 'text-white/80' : 'text-suba-muted'}`}>{children}</p>
-      )}
-    </Reveal>
+      {children && <p className={`mt-4 max-w-2xl text-pretty text-[1.0625rem] leading-relaxed ${dark ? 'text-white/85' : 'text-suba-muted'}`}>{children}</p>}
+    </div>
   );
 }

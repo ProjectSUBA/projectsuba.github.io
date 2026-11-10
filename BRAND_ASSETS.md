@@ -1,6 +1,6 @@
 # Brand Assets Guide
 
-Every visual asset on the website: the logo, icons, the social-share image, and the photo placeholders, plus how to replace the placeholders with real photography.
+Every visual asset on the website: the logo, icons, the social-share image, and how to add real photographs.
 
 For written content see **`CONTENT_GUIDE.md`**. For running or deploying the site see **`README.md`**.
 
@@ -15,7 +15,7 @@ For written content see **`CONTENT_GUIDE.md`**. For running or deploying the sit
 
 These are the only logo files in the project, on purpose: older drafts of the mark were removed so the wrong version cannot be picked up by mistake. If you need another variant (for example a one-colour version for print), add it here and list it in this table.
 
-**How the site uses it.** The `<SubaLogo>` component (`src/components/icons/SubaLogo.tsx`) shows the SVG. On dark green backgrounds it renders a white version automatically, so one file serves both.
+**How the site uses it.** The `<SubaLogo>` component (`src/components/icons/SubaLogo.tsx`) shows the SVG. On the dark green footer it renders a white version automatically, so one file serves both.
 
 **Usage rules (brand book):**
 - Minimum clear space equals the width of the yellow arch
@@ -44,65 +44,62 @@ All are wired up in `src/app/layout.tsx`. The icon links carry `?v=2`: browsers 
 
 `public/images/og-image.png` (1200 x 630) appears when a link to the site is shared on WhatsApp, Instagram, X, LinkedIn, Facebook or iMessage. It is set in `layout.tsx`.
 
-The current card shows the logo, the name and tagline, and the hills motif on dark green. To replace it with a photo-based card: design a 1200 x 630 image with the logo and a strong photograph, keep text large and high-contrast, export as PNG, and overwrite the file. Messaging apps cache these, so a new image can take a while to appear for links that were shared earlier.
+The current card shows the logo, the name and tagline, and a contour-line motif on dark green. To replace it with a photo-based card: design a 1200 x 630 image with the logo and a strong photograph, keep text large and high-contrast, export as PNG, and overwrite the file. Messaging apps cache these, so a new image can take a while to appear for links that were shared earlier.
 
 ---
 
-## 4. Photography
+## 4. Photographs
 
-No real photographs exist yet, so every photo slot shows a labelled illustrated landscape (`<PhotoSlot>`). Each is easy to spot and each carries its brief, so whoever sources the photos knows what is needed.
+The site is designed to work without photographs today and to improve the moment real ones arrive. Where a photograph belongs, the site shows an honest empty frame with crop marks that says **"Photograph to be added"**. It never shows a fake or stock image.
 
-### Where photos go
+### Adding a photo takes two steps
 
-The `public/images/` folders mirror the site:
+1. **Save the image** in `public/images/` (any subfolder). Aim for about 1600px on the long edge and under 300 KB: resize and export at roughly 80% JPEG quality. The site does not resize images for you, so a 5 MB phone photo would be served at 5 MB.
+2. **Register it** in `src/lib/photos.ts`:
 
-```
-images/
-├── hero/          optional homepage hero photo
-├── about/         team photo, hills landscape, root bridge
-├── initiatives/   one photo per initiative
-├── events/        news and update thumbnails
-├── our-work/      before, during and after photos for each campaign
-├── symboh/        research or fieldwork photo
-├── comma/         Khoh basket or recycling station
-└── team/          individual profile photos
-```
-
-### How to swap a placeholder for a real photo
-
-1. Save the photo in the matching folder, for example `public/images/about/founders.jpg`.
-2. Find the `PhotoSlot` in the page or component. A comment directly above it shows the exact `SubaImage` code to use.
-3. Replace `<PhotoSlot ... />` with that `<SubaImage ... />`.
-4. Run `npm run build` to check.
-
-Example, from `src/components/home/WhoWeAre.tsx`:
-
-```tsx
-// Before (placeholder):
-<PhotoSlot label="Team / founders photo" aspectRatio="4/5" accentColor="#FEC110" />
-
-// After (real photo):
-<SubaImage
-  src="/images/about/founders.jpg"
-  alt="SUBA founding team, Shillong"
-  width={600}
-  height={700}
-  caption="Photo credit: Name, Shillong, 2024"
-/>
+```ts
+export const photos: Record<string, Photo> = {
+  'project-ward16-cleanup': {
+    src: '/images/our-work/ward16-drive-9.jpg',
+    alt: 'Volunteers sorting waste into bins at the Ward 16 junction',
+    credit: 'Photo: Name',
+    width: 1600,
+    height: 1067,
+  },
+};
 ```
 
-Always write a real `alt` description, and credit the photographer in `caption` (the brand book requires it).
+No page needs editing. The empty frame is replaced by the photo, with its caption and credit, automatically.
 
-**Keep photos light.** Aim for under 300 KB each: resize to about 1600px on the long edge and export at roughly 80% JPEG quality. The site does not resize images for you, so a 5 MB phone photo would be served at 5 MB.
+Always write a real `alt` description (what is in the photo, for people who cannot see it) and credit the photographer. The brand book requires credits.
 
-### Photography direction (brand book)
+### The slots
+
+| Key | Where it appears |
+|---|---|
+| `hero` | Beside the homepage headline (the hero becomes two columns when this is set) |
+| `team` | A group photo on the About page, shown once team members are added |
+| `project-ward16-cleanup` | The Ward 16 clean-ups project page |
+| `project-mawkhar-plantation` | The Mawkhar plantation project page |
+| `project-symboh-schools` | The environmental education project page |
+| `project-shillong-mobility-study` | The mobility study project page |
+
+Team members' own portraits are set per person in `src/lib/data/index.ts` (`team`, the `photo` field), not in `photos.ts`.
+
+If you add a new project, a slot named `project-<project id>` appears on its page automatically.
+
+### Consent
+
+Get consent before publishing identifiable photographs. For photographs of children, ask the school and a parent or guardian first. See the Privacy page, which promises this, and keep a record of who agreed. If someone asks for a photo to be removed, delete its entry from `photos.ts`.
+
+### What to photograph (brand book)
 
 **Do photograph:**
 - People in action: hands in soil, planting, cleaning, classrooms. Doing, not posing.
 - The Meghalayan landscape: hills, forest, water, living root bridges. Real and unfiltered.
 - Young people leading, as protagonists.
 - Traditional and modern together: a Jainsem at a clean-up, a Khoh basket at a recycling station.
-- Natural light: soft, diffused, golden, sometimes misty. No heavy filters.
+- Natural Meghalayan light: soft, diffused, golden, sometimes misty. No heavy filters.
 
 **Do not photograph:**
 - Generic stock imagery of people who are clearly not from Meghalaya
@@ -111,24 +108,4 @@ Always write a real `alt` description, and credit the photographer in `caption` 
 - Ceremonies or sacred sites without explicit consent
 - Corporate or sterile settings
 
----
-
-## 5. The `<SubaImage>` component
-
-`src/components/ui/SubaImage.tsx` wraps `next/image` with an optional caption (for credits) and a `fill` mode for backgrounds. It works with the static export: `unoptimized: true` is already set in `next.config.ts`. The same file exports `<PhotoSlot>`, the placeholder.
-
----
-
-## 6. Where every placeholder lives
-
-| Page or component | Slots | What is needed |
-|---|---|---|
-| `components/home/WhoWeAre.tsx` | 1 | Team or founders photo |
-| `components/home/LatestUpdates.tsx` | 4 | One photo per news card |
-| `app/about/page.tsx` | 2 | Hills landscape, living root bridge |
-| `app/initiatives/page.tsx` | 4 | One photo per initiative |
-| `app/our-work/page.tsx` | 12 | Before, during and after for each of 4 campaigns |
-| `app/symboh/page.tsx` | 1 | Research or fieldwork photo |
-| `app/comma/page.tsx` | 1 | Khoh basket or recycling station |
-
-**25 slots in total**, each with its replacement code in a comment beside it.
+Imperfect photographs from real SUBA activities are worth more than polished ones. A tired crowd of volunteers after a drive is exactly what the site needs.

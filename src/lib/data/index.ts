@@ -1,11 +1,11 @@
 import type {
-  Publication,
-  Initiative,
-  Programme,
+  FieldEntry,
+  LedgerItem,
   NewsItem,
-  Stat,
-  Testimonial,
-  GalleryEntry,
+  Programme,
+  Project,
+  Publication,
+  TeamMember,
   ValueItem,
 } from '@/lib/types';
 
@@ -13,6 +13,21 @@ import type {
  *  All editable content lives here. See CONTENT_GUIDE.md for how to
  *  add or change entries. Dates are ISO (YYYY-MM-DD).
  * ------------------------------------------------------------------ */
+
+/**
+ * Headline figures, defined once so the same number can never disagree with
+ * itself in two places. Edit a figure here and every page that uses it follows.
+ */
+const F = {
+  wasteKg: '847 kg',
+  drives: '9',
+  saplings: '312',
+  firstCohort: '80',
+  survival: '94%',
+  surveyed: '340',
+  pilot: '38',
+  wards: '12',
+};
 
 export const publications: Publication[] = [
   {
@@ -22,9 +37,9 @@ export const publications: Publication[] = [
     date: '2025-03-15',
     category: 'Policy Brief',
     author: 'Symboh Research Team',
-    summary: 'An assessment of traffic congestion, public transport gaps and actionable policy proposals for Shillong’s mobility challenges, grounded in primary data collected across 12 wards.',
+    kind: 'summary',
+    summary: 'An assessment of traffic congestion, public transport gaps and policy proposals for Shillong’s mobility challenges, based on primary data collected across 12 wards.',
     wing: 'Symboh',
-    readTime: '12 min',
     tags: ['Mobility', 'Urban Policy', 'Shillong'],
     body: [
       {
@@ -48,7 +63,7 @@ export const publications: Publication[] = [
         heading: 'What we recommend',
         paragraphs: [
           'The brief proposes a phased approach: junction-level signal timing studies, a pilot shared-shuttle route connecting two of the highest-demand corridors, and a pedestrian safety audit of three arterial roads. None of these require large capital outlay, and all are designed to produce measurable before and after data within a single budget cycle.',
-          'A full methodology section, ward-by-ward data tables and a proposed implementation timeline are available in the complete brief, submitted to the Shillong Municipal Board in March 2025.',
+          'A full methodology section, ward-by-ward data tables and a proposed implementation timeline are in the complete brief, which was submitted to the Shillong Municipal Board in March 2025.',
         ],
       },
     ],
@@ -60,9 +75,9 @@ export const publications: Publication[] = [
     date: '2025-02-01',
     category: 'Research Paper',
     author: 'SUBA & Comma Initiative',
+    kind: 'summary',
     summary: 'A ground-level mapping of waste flows, informal collectors and recovery infrastructure across Greater Shillong, with recommendations for circular economy integration.',
     wing: 'Comma',
-    readTime: '18 min',
     tags: ['Circular Economy', 'Waste', 'Khasi Hills'],
     body: [
       {
@@ -93,16 +108,16 @@ export const publications: Publication[] = [
     date: '2025-01-10',
     category: 'Report',
     author: 'Symboh Education Working Group',
-    summary: 'Drawing on surveys of 340 students across 6 Shillong schools, this report identifies gaps in environmental education and proposes a culturally grounded curriculum for implementation.',
+    kind: 'summary',
+    summary: `Drawing on surveys of ${F.surveyed} students across 6 Shillong schools, this report identifies gaps in environmental education and proposes a curriculum grounded in the Khasi Hills.`,
     wing: 'Symboh',
-    readTime: '22 min',
     tags: ['Education', 'Environment', 'Meghalaya'],
     body: [
       {
         heading: 'What we set out to learn',
         paragraphs: [
           'Environmental education exists on paper in most Meghalaya school curricula. We wanted to know what it looks like in practice, and whether it connects to the ecological knowledge students already carry from their communities.',
-          'We surveyed 340 students across six Shillong schools, supplemented by interviews with 14 teachers and three sessions observing existing environmental science classes.',
+          `We surveyed ${F.surveyed} students across six Shillong schools, supplemented by interviews with 14 teachers and three sessions observing existing environmental science classes.`,
         ],
       },
       {
@@ -118,7 +133,7 @@ export const publications: Publication[] = [
       {
         heading: 'The pilot we propose',
         paragraphs: [
-          'The report outlines a supplementary curriculum module, six sessions designed to run alongside existing science classes, that grounds core ecological concepts in Khasi Hills examples: local watershed health, indigenous tree species and traditional sustainable practices. The module was piloted with 38 students in one school in late 2024, with positive teacher feedback. The full report includes the session plans and pilot evaluation.',
+          `The report outlines a supplementary curriculum module, six sessions designed to run alongside existing science classes, that grounds core ecological concepts in Khasi Hills examples: local watershed health, indigenous tree species and traditional sustainable practices. The module was piloted with ${F.pilot} students in one school in late 2024, with positive teacher feedback. The full report includes the session plans and pilot evaluation.`,
         ],
       },
     ],
@@ -130,9 +145,9 @@ export const publications: Publication[] = [
     date: '2024-12-01',
     category: 'Newsletter',
     author: 'SUBA Editorial Team',
-    summary: 'Our first published newsletter: clean-up drive notes from Ward 16, a reflection on the Mawkhar tree plantation, and notes from the founding year.',
+    kind: 'full',
+    summary: 'Our first newsletter: notes from the Ward 16 clean-ups, a reflection on the Mawkhar plantation, and thoughts from our first year.',
     wing: 'SUBA',
-    readTime: '8 min',
     tags: ['Community', 'Shillong', 'Field Notes'],
     body: [
       {
@@ -165,7 +180,6 @@ export const publications: Publication[] = [
     author: 'Symboh Research Team',
     summary: 'An evidence-based white paper proposing a decentralised, community-first approach to solid waste management, with Shillong as the pilot geography.',
     wing: 'Symboh',
-    readTime: '25 min',
     tags: ['Waste Management', 'Policy', 'Urban'],
   },
   {
@@ -175,287 +189,298 @@ export const publications: Publication[] = [
     date: '2024-09-05',
     category: 'Research Paper',
     author: 'SUBA Research Team',
-    summary: 'Exploring the traditional ecological knowledge embedded in Khasi living root bridge systems, and what these bioregional practices reveal about sustainable development at community scale.',
+    summary: 'Explores the traditional ecological knowledge in Khasi living root bridge systems, and what these bioregional practices show about sustainable development at community scale.',
     wing: 'SUBA',
-    readTime: '20 min',
     tags: ['TEK', 'Bioregional', 'Khasi Heritage'],
   },
 ];
 
-export const initiatives: Initiative[] = [
+/** The four projects. Each gets its own page at /our-work/<id>. */
+export const projects: Project[] = [
   {
     id: 'ward16-cleanup',
-    title: 'Ward 16 Restoration Series',
-    tagline: 'Regular clean-up drives, Ward 16, Shillong',
-    description: 'A recurring community clean-up and awareness programme running since January 2024, with a drive roughly every two months. 847 kg of waste recovered across 9 drives so far.',
+    title: 'Ward 16 clean-ups',
     wing: 'Comma',
+    place: 'Ward 16, Shillong',
+    since: 'January 2024',
     status: 'Active',
-    area: 'Waste Recovery',
-    href: '/our-work',
-    accentColor: '#259745',
+    summary: 'Community clean-up drives at a junction in Ward 16, about one every two months.',
+    description: [
+      'The Ward 16 series started in January 2024. A drive takes place roughly every two months: volunteers collect waste at the junction, sort it by type, and photograph the site from the same angle before and after.',
+      `By May 2025 there had been ${F.drives} drives and ${F.wasteKg} of waste collected. People who live near the junction have started reporting illegal dumping to us directly, which we count as a result too.`,
+    ],
+    facts: [
+      { label: 'Waste collected', value: F.wasteKg, note: `Total across ${F.drives} drives, January 2024 to May 2025.` },
+      { label: 'Drives', value: F.drives, note: 'Roughly one every two months.' },
+      { label: 'Latest drive', value: '94 kg', note: '24 May 2025. 42 volunteers, 3 hours.' },
+    ],
+    publicationSlugs: ['suba-field-letter-vol-1'],
   },
   {
     id: 'mawkhar-plantation',
-    title: 'The Mawkhar Plantation',
-    tagline: 'Native tree reforestation, Upper Shillong',
-    description: 'A reforestation initiative using indigenous Khasi Hills species. 312 saplings planted across four plantation days, with 94% of the first 80 still alive at the six-month check.',
+    title: 'Mawkhar plantation',
     wing: 'Comma',
+    place: 'Mawkhar, Upper Shillong',
+    since: 'September 2024',
     status: 'Active',
-    area: 'Reforestation',
-    href: '/our-work',
-    accentColor: '#1A5C2E',
+    summary: 'Reforestation with native Khasi Hills species, with every sapling tagged and tracked.',
+    description: [
+      `The first plantation day was on 14 September 2024, when 28 volunteers planted ${F.firstCohort} saplings of four native species, many of them first-time planters. Three more plantation days followed, bringing the total to ${F.saplings} saplings.`,
+      `Each sapling is staked, name-tagged and logged with GPS coordinates, so survival can be checked sapling by sapling. At the six-month check on 14 March 2025, ${F.survival} of the first ${F.firstCohort} were alive.`,
+    ],
+    facts: [
+      { label: 'Saplings planted', value: F.saplings, note: 'Across four plantation days.' },
+      { label: 'Survival at six months', value: F.survival, note: `Of the first ${F.firstCohort} saplings, checked 14 March 2025. It does not cover the later plantings.` },
+      { label: 'Average growth', value: '+38 cm', note: `First ${F.firstCohort} saplings, measured at six months.` },
+    ],
+    publicationSlugs: ['suba-field-letter-vol-1'],
   },
   {
     id: 'symboh-schools',
-    title: 'Schools Environmental Curriculum',
-    tagline: 'Environmental education pilot in Shillong schools',
-    description: 'A supplementary curriculum designed with educators and rooted in Meghalayan ecology and traditional knowledge. Piloted with 38 students in one school; the supporting survey covered 340 students across six schools.',
+    title: 'Environmental education pilot',
     wing: 'Symboh',
+    place: 'Partner schools, Shillong',
+    since: 'November 2024',
     status: 'Active',
-    area: 'Education',
-    href: '/symboh',
-    accentColor: '#1F8EC8',
+    summary: 'A six-session environmental module built around the Khasi Hills, piloted in one school.',
+    description: [
+      `Symboh surveyed ${F.surveyed} students across six Shillong schools and found that environmental education is mostly generic, with little link to Khasi ecology or local land practices. In response we wrote a six-session module and piloted it with ${F.pilot} students in one school in November 2024.`,
+      'Teacher feedback on the pilot was positive. The full report includes the session plans and the pilot evaluation.',
+    ],
+    facts: [
+      { label: 'Students surveyed', value: F.surveyed, note: 'In six Shillong schools, for the report published January 2025.' },
+      { label: 'Pilot', value: `${F.pilot} students`, note: 'One school, six sessions, November 2024.' },
+    ],
+    publicationSlugs: ['environmental-education-meghalaya-schools'],
   },
   {
     id: 'shillong-mobility-study',
-    title: 'Shillong Mobility Study',
-    tagline: 'Primary research on urban transport',
-    description: 'An ongoing data collection and analysis project mapping commute patterns, public transport usage and infrastructure gaps across Shillong.',
+    title: 'Shillong mobility study',
     wing: 'Symboh',
+    place: 'Twelve wards, Shillong',
+    since: 'October 2024',
     status: 'Active',
-    area: 'Urban Policy',
-    href: '/symboh',
-    accentColor: '#FEC110',
+    summary: 'Field research on how people get around Shillong and where the system fails them.',
+    description: [
+      `Between October 2024 and February 2025 our researchers surveyed ${F.wards} wards, combining traffic counts, commuter interviews and route-time logging. The findings became a policy brief, which was submitted to the Shillong Municipal Board in March 2025.`,
+      'The study is ongoing.',
+    ],
+    facts: [
+      { label: 'Wards surveyed', value: F.wards, note: 'Field surveys, October 2024 to February 2025.' },
+      { label: 'Policy brief', value: 'March 2025', note: 'Submitted to the Shillong Municipal Board.' },
+    ],
+    publicationSlugs: ['urban-mobility-shillong-policy-framework'],
   },
 ];
 
 export const commaProgrammes: Programme[] = [
   {
     id: 'ward16',
-    title: 'Ward 16 Restoration Series',
+    title: 'Ward 16 clean-ups',
     status: 'Active',
     since: 'Jan 2024',
-    metric: '847 kg',
-    context: 'waste recovered',
-    description: 'Clean-up drives every two months at Ward 16, Shillong, with before and after documentation and volunteer recognition.',
-    color: '#259745',
+    metric: F.wasteKg,
+    context: `waste collected across ${F.drives} drives`,
+    description: 'Clean-up drives every two months at Ward 16, with before and after documentation.',
+    projectId: 'ward16-cleanup',
   },
   {
     id: 'plastic',
-    title: 'Plastic Recovery Programme',
+    title: 'Plastic recovery',
     status: 'Active',
     since: 'Mar 2024',
     metric: '420+ kg',
-    context: 'plastic separated',
-    description: 'Structured plastic collection with informal waste pickers and recovery facilities in Shillong.',
-    color: '#1F8EC8',
+    context: 'plastic separated by this programme',
+    description: 'Structured plastic collection with informal waste pickers and recovery facilities in Shillong. Tracked separately from the clean-up drive totals.',
   },
   {
     id: 'plantation',
-    title: 'Mawkhar Native Tree Plantation',
+    title: 'Mawkhar plantation',
     status: 'Active',
     since: 'Sep 2024',
-    metric: '312 saplings',
-    context: '94% of the first 80 alive at 6 months',
-    description: 'Reforestation using indigenous Khasi Hills species, with community stewardship.',
-    color: '#1A5C2E',
+    metric: `${F.saplings} saplings`,
+    context: `${F.survival} of the first ${F.firstCohort} alive at 6 months`,
+    description: 'Reforestation using native Khasi Hills species, with community stewardship.',
+    projectId: 'mawkhar-plantation',
   },
   {
     id: 'upcycle',
-    title: 'Upcycling Workshops',
+    title: 'Upcycling workshops',
     status: 'Planned',
     metric: 'In planning',
     context: 'community skill-building',
     description: 'Hands-on workshops turning recovered materials into usable products.',
-    color: '#F6A225',
   },
+];
+
+/** The numbers shown on the homepage. Each says what it counts and when. */
+export const ledger: LedgerItem[] = [
+  { value: F.wasteKg, label: 'Waste collected', note: `Total across ${F.drives} Ward 16 drives, January 2024 to May 2025.`, href: '/our-work/ward16-cleanup' },
+  { value: F.saplings, label: 'Saplings planted', note: `At Mawkhar, across four plantation days. ${F.survival} of the first ${F.firstCohort} were alive at six months.`, href: '/our-work/mawkhar-plantation' },
+  { value: F.surveyed, label: 'Students surveyed', note: `In six Shillong schools, for our education report. The pilot module was taught to ${F.pilot} students in one school.`, href: '/our-work/symboh-schools' },
+  { value: F.wards, label: 'Wards surveyed', note: 'For the mobility study, October 2024 to February 2025.', href: '/our-work/shillong-mobility-study' },
 ];
 
 export const newsItems: NewsItem[] = [
   {
     id: 'n1',
-    title: 'Ward 16 clean-up, drive 9: 94 kg recovered in 3 hours',
+    title: 'Ward 16 clean-up, drive 9: 94 kg in 3 hours',
     type: 'Update',
     date: '2025-05-24',
     description: 'Forty-two volunteers, two Khoh baskets and a clear morning. The ninth Ward 16 drive left the junction a little cleaner again.',
     location: 'Ward 16, Shillong',
+    project: 'ward16-cleanup',
   },
   {
     id: 'n2',
     title: 'Symboh at the Meghalaya Urban Forum',
     type: 'Event',
     date: '2025-06-10',
-    description: 'Our mobility research presented at the Meghalaya Urban Forum, alongside policymakers and researchers from across the state.',
+    description: 'Our mobility research was presented at the Meghalaya Urban Forum, alongside policymakers and researchers from across the state.',
     location: 'Shillong',
+    project: 'shillong-mobility-study',
   },
   {
     id: 'n3',
-    title: 'Call for Research Collaborators, Round 2',
+    title: 'Call for research collaborators, round 2',
     type: 'Announcement',
     date: '2025-05-15',
-    description: 'Symboh is opening applications for research collaborators in environmental data analysis, urban governance and education policy.',
+    description: 'Symboh opened applications for research collaborators in environmental data analysis, urban governance and education policy.',
   },
   {
     id: 'n4',
     title: 'Mawkhar plantation: six-month check',
     type: 'Update',
     date: '2025-03-14',
-    description: 'Of the first 80 saplings, 94% had survived at six months. Local volunteers measured growth against the original stake markers.',
+    description: `Of the first ${F.firstCohort} saplings, ${F.survival} had survived at six months. Local volunteers measured growth against the original stake markers.`,
     location: 'Mawkhar, Upper Shillong',
+    project: 'mawkhar-plantation',
   },
   {
     id: 'n5',
-    title: 'SUBA Field Letter Vol. I is out',
+    title: 'The SUBA Field Letter, Vol. I',
     type: 'Announcement',
     date: '2024-12-01',
-    description: 'Our first newsletter is published, with field notes, numbers and reflections from our founding year.',
+    description: 'Our first newsletter: field notes and reflections from our first year.',
   },
   {
     id: 'n6',
-    title: 'Volunteer Orientation, July 2025',
+    title: 'Volunteer orientation, July 2025',
     type: 'Event',
     date: '2025-07-05',
-    description: 'New to SUBA? Join our July orientation session to learn about ongoing projects, how to get involved and what to expect.',
-    location: 'Shillong (venue to be confirmed)',
+    description: 'An orientation for new volunteers covering ongoing projects, how to get involved and what to expect.',
+    location: 'Shillong',
   },
 ];
 
-/** Homepage and Comma figures. Counts that exist in other lists are computed so they cannot drift. */
-export const stats: Stat[] = [
-  { value: '847 kg', label: 'Waste recovered', context: 'Across 9 clean-up drives, Jan 2024 to May 2025' },
-  { value: '340', label: 'Students surveyed', context: 'Across 6 Shillong schools' },
-  { value: '312', label: 'Trees planted', context: '94% of the first 80 alive at 6 months' },
-  { value: String(publications.length), label: 'Publications', context: 'Briefs, papers, reports and a newsletter' },
-  { value: '42+', label: 'Active volunteers', context: 'Across all initiatives' },
-  { value: '2', label: 'Wings', context: 'Symboh and Comma' },
-];
-
-/** The short stat bar in the homepage hero. */
-export const heroStats: Stat[] = [
-  { value: '847 kg', label: 'waste recovered' },
-  { value: '9', label: 'clean-up drives' },
-  { value: '312', label: 'trees planted' },
-  { value: String(publications.length), label: 'publications' },
-];
-
-export const focusAreas = [
-  { icon: 'leaf', title: 'Environment', description: 'Forest conservation, biodiversity and ecological restoration grounded in Meghalayan landscapes.', color: '#259745' },
-  { icon: 'community', title: 'Civic Action', description: 'Community mobilisation, clean-up drives and local advocacy in Shillong’s wards.', color: '#1A5C2E' },
-  { icon: 'search', title: 'Research', description: 'Evidence-based analysis of urban governance, mobility, waste and education in the Khasi Hills.', color: '#1F8EC8' },
-  { icon: 'book', title: 'Education', description: 'Curriculum development, school partnerships and youth-led environmental literacy.', color: '#FEC110' },
-  { icon: 'recycle', title: 'Circular Economy', description: 'Plastic recovery, upcycling and waste infrastructure that works for Meghalaya.', color: '#F6A225' },
-  { icon: 'document', title: 'Policy', description: 'Policy briefs and research shared with state government, urban bodies and educational institutions.', color: '#1A5C2E' },
-];
-
 export const symbohResearchAreas = [
-  { title: 'Urban Mobility & Transport', description: 'Traffic, public transport gaps and infrastructure analysis across Shillong.' },
-  { title: 'Solid Waste & Governance', description: 'Policy mapping and community-led models for waste management.' },
-  { title: 'Environmental Education', description: 'Curriculum research and school partnership frameworks.' },
-  { title: 'Urban Development', description: 'Land use, housing and planning research for Meghalayan cities.' },
-  { title: 'Data & Civic Analytics', description: 'Open data, GIS and civic data pipelines for the Northeast.' },
-  { title: 'Policy & Governance', description: 'Policy briefs, submissions and dialogue with government bodies.' },
+  { title: 'Urban mobility and transport', description: 'Traffic, public transport gaps and infrastructure analysis across Shillong.' },
+  { title: 'Solid waste and governance', description: 'Policy mapping and community-led models for waste management.' },
+  { title: 'Environmental education', description: 'Curriculum research and school partnership frameworks.' },
+  { title: 'Urban development', description: 'Land use, housing and planning research for Meghalayan cities.' },
+  { title: 'Data and civic analytics', description: 'Open data, GIS and civic data pipelines for the Northeast.' },
+  { title: 'Policy and governance', description: 'Policy briefs, submissions and dialogue with government bodies.' },
 ];
 
+/** What Symboh commits to. These are standards we hold ourselves to, not claims about every document so far. */
 export const symbohMethods = [
-  { title: 'Primary data first', body: 'We collect our own data before citing secondary sources.' },
-  { title: 'Cited and traceable', body: 'We footnote our claims and document our datasets, so anyone can check our working.' },
-  { title: 'Community-validated', body: 'Findings are shared with the communities they describe before publication.' },
-  { title: 'Open access', body: 'Our research is free to read. Meghalaya’s problems should not sit behind paywalls.' },
+  { title: 'Primary data first', body: 'We collect our own data before we cite anyone else’s.' },
+  { title: 'Show the method', body: 'Each publication should say how its data was collected, so readers can judge the findings for themselves.' },
+  { title: 'Check with the community', body: 'We share findings with the communities they describe before we publish.' },
+  { title: 'Free to read', body: 'Our research is free to read online. Meghalaya’s problems should not sit behind a paywall.' },
 ];
 
-/** The five qualities SUBA holds itself to. Shown on the About page. */
+/** The five qualities SUBA tries to hold to. Shown on the About page. */
 export const values: ValueItem[] = [
   { trait: 'Rooted', description: 'In the land, language and people of Meghalaya.' },
   { trait: 'Purposeful', description: 'Deliberate, and never rushed, generic or borrowed.' },
-  { trait: 'Hopeful', description: 'Acting in the face of real problems without sliding into doom.' },
+  { trait: 'Hopeful', description: 'Acting on real problems without sliding into doom.' },
   { trait: 'Community-first', description: 'We credit, we include, and we decide together.' },
   { trait: 'Action-oriented', description: 'Real work over mission statements.' },
 ];
 
 /**
- * Testimonials stay empty until there are real, consented quotes. The homepage
- * section hides itself while this list is empty. Example of the format:
+ * The people behind SUBA. Empty until you add real entries, and the About page
+ * hides the section while it is empty. Example:
  *
  * {
- *   id: 't1',
- *   quote: 'The words the person said or approved.',
- *   name: 'Their full name',
- *   role: 'Their role',
- *   affiliation: 'Their organisation (optional)',
- *   category: 'Volunteer',
+ *   name: 'Full Name',
+ *   role: 'Co-founder and coordinator',
+ *   bio: 'One or two sentences about what they do at SUBA.',
+ *   photo: '/images/team/full-name.jpg',
  * },
  */
-export const testimonials: Testimonial[] = [];
+export const team: TeamMember[] = [];
 
-export const galleryEntries: GalleryEntry[] = [
+export const fieldEntries: FieldEntry[] = [
   {
     id: 'ward16-drive-9',
-    title: 'Ward 16 Clean-Up, Drive 9',
+    project: 'ward16-cleanup',
+    title: 'Drive 9',
     date: '2025-05-24',
-    location: 'Ward 16 Junction, Shillong',
-    wing: 'Comma',
-    summary: 'The ninth drive in our Ward 16 series. Forty-two volunteers, two Khoh baskets, and a junction that has visibly changed over sixteen months of repeated effort.',
+    location: 'Ward 16 junction, Shillong',
+    summary: 'The ninth drive in the series. Forty-two volunteers, two Khoh baskets, and a junction that has visibly changed over sixteen months of repeated effort.',
     stats: [
-      { label: 'Waste recovered', value: '94 kg' },
+      { label: 'Waste', value: '94 kg' },
       { label: 'Volunteers', value: '42' },
       { label: 'Duration', value: '3 hours' },
     ],
-    before: { caption: 'Site condition before the drive: accumulated waste at the junction, photographed the same morning.' },
-    during: { caption: 'Volunteers sorting recovered waste by category for separation into recycling streams.' },
-    after: { caption: 'Same junction, three hours later. Before and after shots are taken from the identical angle every time.' },
-    reflection: 'This was our ninth drive at this junction, and the difference in baseline waste between drive one and drive nine is the real story. Less waste shows up between drives now, because residents nearby have started reporting dumping directly to us.',
-    credits: ['Photography: Volunteer team'],
+    before: 'Accumulated waste at the junction, photographed the same morning.',
+    during: 'Volunteers sorting recovered waste by category for separation into recycling streams.',
+    after: 'The same junction three hours later. Before and after shots are taken from the identical angle every time.',
+    reflection: 'The difference in baseline waste between drive one and drive nine is the real story. Less waste shows up between drives now, because residents nearby have started reporting dumping directly to us.',
+    credits: ['Photography: volunteer team'],
   },
   {
     id: 'mawkhar-plantation-day',
-    title: 'Mawkhar Plantation Day',
+    project: 'mawkhar-plantation',
+    title: 'First plantation day',
     date: '2024-09-14',
     location: 'Mawkhar, Upper Shillong',
-    wing: 'Comma',
-    summary: 'The founding plantation day for our Mawkhar reforestation series: 80 saplings of indigenous species planted by first-time volunteers.',
+    summary: 'The founding plantation day for the Mawkhar series: 80 saplings of native species planted by first-time volunteers.',
     stats: [
-      { label: 'Saplings planted', value: '80' },
+      { label: 'Saplings', value: '80' },
       { label: 'Species', value: '4 native' },
       { label: 'Volunteers', value: '28' },
     ],
-    before: { caption: 'The plantation site before work began, cleared and marked for spacing.' },
-    during: { caption: 'A volunteer planting their first tree, briefed on depth and spacing beforehand.' },
-    after: { caption: 'Saplings staked and name-tagged for individual monitoring.' },
-    reflection: 'This was the first of four plantation days at this site. We log GPS coordinates for every sapling so survival can be tracked individually rather than estimated in aggregate.',
-    credits: ['Photography: Volunteer team'],
+    before: 'The site before work began, cleared and marked for spacing.',
+    during: 'A volunteer planting their first tree, briefed on depth and spacing beforehand.',
+    after: 'Saplings staked and name-tagged for individual monitoring.',
+    reflection: 'This was the first of four plantation days at the site. We log GPS coordinates for every sapling so survival can be tracked one by one rather than estimated.',
+    credits: ['Photography: volunteer team'],
   },
   {
     id: 'mawkhar-6month-followup',
-    title: 'Mawkhar: 6 Month Survival Check',
+    project: 'mawkhar-plantation',
+    title: 'Six-month survival check',
     date: '2025-03-14',
     location: 'Mawkhar, Upper Shillong',
-    wing: 'Comma',
-    summary: 'Six months after the founding plantation day, a return visit to check survival and document growth.',
+    summary: 'Six months after the first plantation day, a return visit to check survival and measure growth.',
     stats: [
-      { label: 'Survival rate', value: '94%' },
+      { label: 'Survival', value: '94%' },
       { label: 'Saplings checked', value: '80' },
-      { label: 'Avg. growth', value: '+38 cm' },
+      { label: 'Average growth', value: '+38 cm' },
     ],
-    before: { caption: 'Site overview at the six-month mark, showing canopy density relative to the planting day.' },
-    during: { caption: 'A local volunteer measuring sapling growth against the original stake markers.' },
-    after: { caption: 'Close detail of new growth on one of the surviving saplings.' },
+    before: 'The site overview at six months, showing canopy density compared with planting day.',
+    during: 'A local volunteer measuring sapling growth against the original stake markers.',
+    after: 'Close detail of new growth on one of the surviving saplings.',
     reflection: 'People want to know if their tree survived. That is why we follow up at regular intervals, not just on planting day.',
   },
   {
     id: 'schools-pilot-session',
-    title: 'Environmental Curriculum: Pilot Session',
+    project: 'symboh-schools',
+    title: 'Pilot session',
     date: '2024-11-08',
-    location: 'Partner School, Shillong',
-    wing: 'Symboh',
-    summary: 'The first delivery of our supplementary environmental education module, piloted with a single class before any wider rollout.',
+    location: 'Partner school, Shillong',
+    summary: 'The first delivery of the supplementary environmental education module, piloted with a single class before any wider rollout.',
     stats: [
       { label: 'Students', value: '38' },
       { label: 'Sessions', value: '6' },
-      { label: 'Schools (pilot)', value: '1' },
+      { label: 'Schools', value: '1' },
     ],
-    before: { caption: 'Classroom setup before the session, with materials prepared around local ecological examples.' },
-    during: { caption: 'Students working on a local watershed mapping exercise.' },
-    after: { caption: 'Student-created material from the session, displayed in the classroom afterward.' },
+    before: 'Classroom setup before the session, with materials prepared around local ecological examples.',
+    during: 'Students working on a local watershed mapping exercise.',
+    after: 'Student-made material from the session, displayed in the classroom afterwards.',
     reflection: 'The pilot ran in one school first. We wanted teacher feedback before scaling, not after.',
   },
 ];

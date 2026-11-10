@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { publications } from '@/lib/data';
-import { Badge } from '@/components/ui/Badge';
-import { Icon } from '@/components/ui/Icons';
-import { categoryTone, formatDate, hasDownload, hasFullText } from '@/lib/ui';
+import { Tag } from '@/components/ui/Tag';
+import { formatDate, hasDownload, hasFullText, readingMinutes } from '@/lib/ui';
+import type { Publication } from '@/lib/types';
 
 export const categories = ['All', 'Policy Brief', 'Research Paper', 'Report', 'Newsletter', 'White Paper'];
 export const wings = ['All wings', 'SUBA', 'Symboh', 'Comma'];
@@ -17,16 +17,15 @@ function filterHref(category: string, wing: string): string {
   return query ? `/publications?${query}` : '/publications';
 }
 
-function Chip({ href, active, children, tone }: { href: string; active: boolean; children: ReactNode; tone: 'dark' | 'green' }) {
-  const activeClass = tone === 'dark' ? 'bg-dark-green text-white' : 'bg-green-ink text-white';
+function FilterLink({ href, active, children }: { href: string; active: boolean; children: ReactNode }) {
   return (
     <Link
       href={href}
       replace
       scroll={false}
       aria-current={active ? 'true' : undefined}
-      className={`rounded-md border border-dark-green/25 px-3 py-1.5 text-[0.8rem] transition-colors ${
-        active ? activeClass : 'bg-white text-suba-text hover:bg-cream-light'
+      className={`px-2.5 py-1 text-[0.85rem] transition-colors ${
+        active ? 'bg-mikado font-semibold text-forest' : 'underline decoration-ink/30 underline-offset-4 hover:bg-paper-deep'
       }`}
     >
       {children}
@@ -34,11 +33,16 @@ function Chip({ href, active, children, tone }: { href: string; active: boolean;
   );
 }
 
+function statusOf(pub: Publication): string {
+  if (!hasFullText(pub)) return 'Full text coming soon';
+  return pub.kind === 'summary' ? 'Summary online' : 'Full text online';
+}
+
 /**
- * The filter bar and publication list. It is a plain component (no hooks), so the
- * page can render it on the server: the full list is then in the static HTML for
- * search engines and for visitors without JavaScript. PublicationsClient re-renders
- * it with the filters from the URL once the page loads.
+ * The filter bar and the publication catalogue. A plain component (no hooks), so
+ * the page can render it on the server: the full list is then in the static HTML
+ * for search engines and for visitors without JavaScript. PublicationsClient
+ * re-renders it with the filters from the URL once the page loads.
  */
 export function PublicationsView({ category, wing }: { category: string; wing: string }) {
   const filtered = publications
@@ -47,85 +51,74 @@ export function PublicationsView({ category, wing }: { category: string; wing: s
 
   return (
     <>
-      <div className="bg-cream py-10">
-        <div className="mx-auto flex max-w-7xl flex-col flex-wrap gap-6 px-4 sm:flex-row sm:px-6 lg:px-8">
-          <div>
-            <p className="label-mono mb-2 text-green-ink">Type</p>
-            <div className="flex flex-wrap gap-2">
-              {categories.map((c) => (
-                <Chip key={c} href={filterHref(c, wing)} active={category === c} tone="dark">{c}</Chip>
-              ))}
-            </div>
+      <div className="border-b border-ink/30 bg-paper-deep">
+        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-6 sm:px-6 lg:flex-row lg:gap-12 lg:px-8">
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-2">
+            <span className="label-mono mr-2 text-suba-muted">Type</span>
+            {categories.map((c) => (
+              <FilterLink key={c} href={filterHref(c, wing)} active={category === c}>{c}</FilterLink>
+            ))}
           </div>
-          <div>
-            <p className="label-mono mb-2 text-green-ink">Wing</p>
-            <div className="flex flex-wrap gap-2">
-              {wings.map((w) => (
-                <Chip key={w} href={filterHref(category, w)} active={wing === w} tone="green">{w}</Chip>
-              ))}
-            </div>
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-2">
+            <span className="label-mono mr-2 text-suba-muted">Wing</span>
+            {wings.map((w) => (
+              <FilterLink key={w} href={filterHref(category, w)} active={wing === w}>{w}</FilterLink>
+            ))}
           </div>
         </div>
       </div>
 
-      <section className="min-h-[50vh] bg-white py-12" aria-label="Publication list">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <p className="label-mono mb-6 text-suba-muted" role="status" aria-live="polite">
+      <section className="min-h-[50vh] bg-white" aria-label="Publication list">
+        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+          <p className="label-mono mb-4 text-suba-muted" role="status" aria-live="polite">
             {filtered.length} publication{filtered.length !== 1 ? 's' : ''}
           </p>
-          <div className="divide-y divide-dark-green/10">
+          <ul className="border-t-2 border-ink">
             {filtered.map((pub) => {
               const readable = hasFullText(pub);
+              const minutes = readingMinutes(pub);
               return (
-                <article key={pub.id} className="group py-8">
-                  <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
-                    <div className="flex-1">
-                      <div className="mb-3 flex flex-wrap items-center gap-2.5">
-                        <Badge tone={categoryTone[pub.category]}>{pub.category}</Badge>
-                        {pub.wing && <span className="label-mono text-suba-muted">{pub.wing}</span>}
-                        <time dateTime={pub.date} className="text-xs text-suba-muted">{formatDate(pub.date)}</time>
-                        {pub.readTime && <span className="label-mono text-suba-muted">{pub.readTime} read</span>}
-                      </div>
-                      <h2 className="mb-2 font-display text-lg font-semibold leading-snug">
-                        {readable ? (
-                          <Link href={`/publications/${pub.slug}`} className="transition-colors group-hover:text-green-ink">{pub.title}</Link>
-                        ) : (
-                          pub.title
-                        )}
-                      </h2>
-                      <p className="mb-3 text-sm leading-relaxed text-suba-muted">{pub.summary}</p>
-                      <p className="text-[0.8rem] text-suba-muted">By {pub.author}</p>
-                      {pub.tags && (
-                        <ul className="mt-3 flex flex-wrap gap-1.5">
-                          {pub.tags.map((tag) => (
-                            <li key={tag} className="rounded-full bg-cream px-2.5 py-0.5 text-xs text-suba-muted">{tag}</li>
-                          ))}
-                        </ul>
-                      )}
+                <li key={pub.id} className="grid gap-2 border-b border-ink/30 py-7 sm:grid-cols-12 sm:gap-6">
+                  <time dateTime={pub.date} className="label-mono pt-1.5 text-suba-muted sm:col-span-2">{formatDate(pub.date)}</time>
+                  <div className="sm:col-span-7">
+                    <div className="mb-2 flex flex-wrap items-center gap-2">
+                      <Tag>{pub.category}</Tag>
+                      {pub.wing && <span className="label-mono text-suba-muted">{pub.wing}</span>}
                     </div>
-                    <div className="flex flex-shrink-0 flex-col items-start gap-2 sm:items-end">
+                    <h2 className="font-display text-2xl font-bold leading-snug">
                       {readable ? (
-                        <Link href={`/publications/${pub.slug}`} className="inline-flex items-center gap-2 rounded-lg border border-dark-green/30 px-4 py-2.5 text-[0.8rem] font-medium text-dark-green transition-colors hover:bg-cream-light">
-                          Read online <Icon name="arrow" size={14} />
-                        </Link>
+                        <Link href={`/publications/${pub.slug}`} className="hover:underline hover:decoration-2 hover:underline-offset-4">{pub.title}</Link>
                       ) : (
-                        <span className="label-mono text-suba-muted">Full text coming soon</span>
+                        pub.title
                       )}
-                      {hasDownload(pub) && (
-                        <a href={pub.downloadUrl} className="inline-flex items-center gap-2 rounded-lg border border-dark-green/30 px-4 py-2.5 text-[0.8rem] font-medium text-dark-green transition-colors hover:bg-cream-light">
-                          <Icon name="download" size={14} /> Download PDF
-                        </a>
-                      )}
-                    </div>
+                    </h2>
+                    <p className="mt-2 leading-relaxed text-suba-muted">{pub.summary}</p>
+                    <p className="mt-2 text-[0.85rem] text-suba-muted">By {pub.author}</p>
                   </div>
-                </article>
+                  <div className="sm:col-span-3 sm:text-right">
+                    <p className="label-mono text-suba-muted">{statusOf(pub)}</p>
+                    {readable && minutes && <p className="label-mono mt-1 text-suba-muted">{minutes} min read</p>}
+                    {readable && (
+                      <p className="mt-3">
+                        <Link href={`/publications/${pub.slug}`} className="text-sm font-semibold underline decoration-2 underline-offset-4 hover:bg-mikado">
+                          {pub.kind === 'summary' ? 'Read the summary →' : 'Read →'}
+                        </Link>
+                      </p>
+                    )}
+                    {hasDownload(pub) && (
+                      <p className="mt-2">
+                        <a href={pub.downloadUrl} className="text-sm font-semibold underline underline-offset-4 hover:bg-mikado">Download PDF</a>
+                      </p>
+                    )}
+                  </div>
+                </li>
               );
             })}
-          </div>
+          </ul>
           {filtered.length === 0 && (
             <div className="py-20 text-center">
-              <p className="mb-3 text-base text-suba-muted">No publications match this filter.</p>
-              <Link href="/publications" className="text-sm font-medium text-green-ink underline">Clear filters</Link>
+              <p className="mb-3 text-suba-muted">No publications match this filter.</p>
+              <Link href="/publications" className="text-sm font-semibold underline underline-offset-4">Clear filters</Link>
             </div>
           )}
         </div>
