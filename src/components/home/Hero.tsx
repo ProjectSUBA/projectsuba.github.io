@@ -130,13 +130,6 @@ export function Hero() {
         </div>
       </div>
 
-      {/* Scroll cue */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2.5 opacity-50" aria-hidden="true">
-        <span className="label-mono text-white/80" style={{ fontSize: '0.5rem', letterSpacing: '0.25em' }}>SCROLL</span>
-        <div className="w-px h-10 bg-white/25 relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-1/2 bg-white/90 animate-scroll-cue" />
-        </div>
-      </div>
     </section>
   );
 }

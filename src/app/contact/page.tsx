@@ -30,10 +30,6 @@ export default function ContactPage() {
                   </div>
                 ))}
               </div>
-              <div className="mt-8 p-5 rounded-sm" style={{backgroundColor:'#FAF0C8',border:'1px solid rgba(26,92,46,0.1)'}}>
-                <p style={{fontFamily:'var(--font-fraunces)',fontSize:'0.875rem',fontStyle:'italic',color:'#1A5C2E',lineHeight:'1.6'}}>"One email, one purpose. If you're asking about two different things, please write two emails."</p>
-                <span className="label-mono mt-2 block" style={{color:'#4A4A40',fontSize:'0.55rem',letterSpacing:'0.15em'}}>— SUBA COMMUNICATION PRINCIPLES</span>
-              </div>
             </div>
             <div className="lg:col-span-7">
               <h2 className="mb-6" style={{fontFamily:'var(--font-fraunces)',fontSize:'1.5rem',color:'#1A5C2E',fontWeight:600}}>Send a message</h2>

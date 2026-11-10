@@ -240,11 +240,16 @@
 }
 .animate-float { animation: floatSlow 7s ease-in-out infinite; }
 
-@keyframes scrollCue {
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(220%); }
+/* Page-to-page fade. fill-mode is "backwards" (not "both"/"forwards") on
+   purpose: once the animation ends no transform is left on the wrapper, which
+   would otherwise break position: sticky / fixed descendants. */
+@keyframes pageEnter {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-.animate-scroll-cue { animation: scrollCue 2s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+.page-enter {
+  animation: pageEnter 0.45s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
 
 @keyframes shimmer {
   0% { background-position: -200% 0; }

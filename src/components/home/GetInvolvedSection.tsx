@@ -100,20 +100,6 @@ export function GetInvolvedSection() {
           ))}
         </div>
 
-        {/* Pull quote */}
-        <Reveal>
-          <div className="relative text-center py-12 px-6 rounded-2xl overflow-hidden grain" style={{ background: 'linear-gradient(150deg, #1A5C2E, #0F3D20)' }}>
-            <div className="glow-blob" style={{ top: '-3rem', left: '50%', transform: 'translateX(-50%)', width: '16rem', height: '16rem', background: 'rgba(254,193,16,0.12)' }} aria-hidden="true" />
-            <blockquote className="relative">
-              <p className="text-white mb-3" style={{ fontFamily: 'var(--font-fraunces), Georgia, serif', fontSize: 'clamp(1.3rem, 3vw, 1.85rem)', fontStyle: 'italic', lineHeight: '1.4' }}>
-                &ldquo;Like the living root bridges — built together.&rdquo;
-              </p>
-              <cite className="label-mono text-white/40 not-italic" style={{ fontSize: '0.6rem', letterSpacing: '0.2em' }}>
-                SUBA BRAND BOOK, VOL. I · 2025
-              </cite>
-            </blockquote>
-          </div>
-        </Reveal>
       </div>
     </section>
   );
