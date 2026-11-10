@@ -33,9 +33,11 @@ export function Header() {
   }, [pathname]);
 
   // On homepage: transparent until scroll. On other pages: always white.
+  // Note: a solid background (not backdrop-blur) on this fixed header — a blurred
+  // fixed element re-rasterises every scroll frame and causes visible jank.
   const bgStyle = isHome
     ? isScrolled
-      ? 'bg-white/95 backdrop-blur-sm shadow-sm border-b border-[#FAF0C8]'
+      ? 'bg-white shadow-sm border-b border-[#FAF0C8]'
       : 'bg-transparent'
     : 'bg-white border-b border-[#FAF0C8]';
 

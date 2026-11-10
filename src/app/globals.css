@@ -37,7 +37,8 @@
 
 @layer base {
   html {
-    scroll-behavior: smooth;
+    /* Native (immediate) scrolling — CSS smooth-scroll makes the wheel feel laggy.
+       In-page anchor jumps still animate smoothly via the rule at the bottom. */
     -webkit-text-size-adjust: 100%;
   }
 
@@ -122,12 +123,14 @@
 }
 
 /* ── Reveal-on-scroll ─────────────────────────────────── */
+/* One-shot entrance. No persistent will-change — leaving it on dozens of
+   elements creates dozens of compositor layers and hurts scroll performance.
+   The browser promotes automatically for the short duration of the transition. */
 .reveal {
   opacity: 0;
-  transform: translate3d(0, 22px, 0);
-  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-              transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: opacity, transform;
+  transform: translate3d(0, 20px, 0);
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .reveal.is-visible {
   opacity: 1;
@@ -246,6 +249,12 @@
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
+}
+
+/* Smooth scrolling for in-page anchor jumps only — this never affects the
+   mouse wheel / trackpad, so the page still feels native and immediate. */
+@media (prefers-reduced-motion: no-preference) {
+  html:focus-within { scroll-behavior: smooth; }
 }
 
 /* ── Reduced motion ───────────────────────────────────── */
