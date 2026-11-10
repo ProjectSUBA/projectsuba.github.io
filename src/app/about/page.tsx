@@ -73,28 +73,35 @@ export default function AboutPage() {
                 style={{ fontFamily: 'var(--font-inter)', fontSize: '1rem', lineHeight: '1.75', color: '#1A1A1A' }}
               >
                 <p>
-                  In Khasi, <em>kyrteng</em> means to name. And a name is never trivial — it carries
+                  In Khasi, <em>kyrteng</em> means to name, and a name is never trivial. It carries
                   intent, memory, and direction. Before there was a logo, before there was a colour
-                  or a typeface, there was a question the founding team sat with together: what do
-                  we call this thing we are building?
+                  or a typeface, the founding team sat with one question together: what do we call
+                  this thing we are building?
                 </p>
                 <p>
-                  They considered many names. Each one a different window into the same mission,
-                  each one a small act of care — choosing English acronyms that mapped back to
-                  Khasi words, refusing to separate the two worlds even at the very beginning.
+                  They considered many names, among them <em>Khuid</em>, the Khasi word for clean.
+                  Each was a different window into the same mission, each a small act of care,
+                  holding English and Khasi in the same hand rather than keeping the two worlds apart.
                 </p>
                 <p>
-                  <strong>SUBA</strong> — Sustainable Urban and Bioregional Action — emerged not
-                  as a compromise but as a convergence. It sits comfortably in Khasi and English
-                  at once. Which is exactly where SUBA operates.
+                  <strong>SUBA</strong> reads in English as Sustainable Urban and Bioregional Action.
+                  But <em>suba</em> is also a Khasi word, and that is what made it feel right. In
+                  everyday Khasi, suba carries a sense of what is clean, pure, and good. It belongs
+                  beside <em>khuid</em>, clean, the way people say <em>khuid and suba</em> in one
+                  breath. To call someone suba is to say they are good.
+                </p>
+                <p>
+                  So the name says one thing in two languages. In English it names the work. In
+                  Khasi it names the value beneath the work, clean and good. Not a compromise
+                  between two worlds, but a convergence. Which is exactly where SUBA operates.
                 </p>
                 <blockquote
                   className="border-l-4 pl-6 my-8"
                   style={{ borderColor: '#FEC110', fontStyle: 'italic', color: '#1A5C2E', fontFamily: 'var(--font-fraunces)', fontSize: '1.125rem' }}
                 >
-                  "A name carries intent. We didn't rush it."
+                  "In Khasi, suba means clean. It means good. We chose a name that already meant what we hoped to become."
                   <cite className="block mt-2 label-mono not-italic" style={{ color: '#4A4A40', fontSize: '0.6rem', letterSpacing: '0.15em' }}>
-                    — THE FOUNDING CONVERSATION, KYRTENG, 2023
+                    THE FOUNDING CONVERSATION, KYRTENG, 2023
                   </cite>
                 </blockquote>
                 <p>

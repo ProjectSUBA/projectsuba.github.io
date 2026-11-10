@@ -21,10 +21,11 @@ export function WhoWeAre() {
               <span style={{ fontStyle: 'italic', color: '#259745' }}>It carries intent.</span>
             </h2>
             <p className="mb-5" style={{ fontFamily: 'var(--font-inter)', fontSize: '1.0625rem', lineHeight: '1.75', color: '#1A1A1A' }}>
-              SUBA — Sustainable Urban and Bioregional Action — began as a conversation
+              SUBA, Sustainable Urban and Bioregional Action, began as a conversation
               among a small group of people in Shillong who believed the hills deserved
-              better than apathy. The name was not rushed. In Khasi, <em>kyrteng</em> means
-              to name, and a name carries intent, memory, and direction.
+              better than apathy. The name was not rushed. In Khasi, <em>suba</em> speaks
+              of what is clean and good, the quality people name in the phrase <em>khuid
+              and suba</em>. It says in Khasi what the work says in English.
             </p>
             <p className="mb-5" style={{ fontFamily: 'var(--font-inter)', fontSize: '1.0625rem', lineHeight: '1.75', color: '#1A1A1A' }}>
               We plant trees and publish policy briefs. We run clean-up drives and submit
