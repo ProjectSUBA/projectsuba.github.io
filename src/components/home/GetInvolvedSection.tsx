@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Reveal } from '@/components/ui/Reveal';
+import { Icon, type IconName } from '@/components/ui/Icons';
 
 export function GetInvolvedSection() {
   const ways = [
@@ -9,7 +10,7 @@ export function GetInvolvedSection() {
       cta: 'Apply as Volunteer',
       href: '/get-involved#volunteer',
       color: '#259745',
-      icon: '🤝',
+      icon: 'heart',
     },
     {
       title: 'Collaborate',
@@ -17,7 +18,7 @@ export function GetInvolvedSection() {
       cta: 'Start a Conversation',
       href: '/get-involved#collaborate',
       color: '#1F8EC8',
-      icon: '🔬',
+      icon: 'flask',
     },
     {
       title: 'Partner',
@@ -25,7 +26,7 @@ export function GetInvolvedSection() {
       cta: 'Partnership Enquiry',
       href: '/get-involved#partner',
       color: '#FEC110',
-      icon: '🤲',
+      icon: 'link',
     },
     {
       title: 'Stay Informed',
@@ -33,7 +34,7 @@ export function GetInvolvedSection() {
       cta: 'Subscribe to Updates',
       href: '/get-involved#subscribe',
       color: '#F6A225',
-      icon: '📬',
+      icon: 'mail',
     },
   ];
 
@@ -72,11 +73,11 @@ export function GetInvolvedSection() {
               >
                 <div className="absolute top-0 left-0 right-0 h-1" style={{ background: way.color }} aria-hidden="true" />
                 <div
-                  className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-4"
+                  className="w-12 h-12 rounded-xl flex items-center justify-center mb-4"
                   style={{ backgroundColor: way.color + '18' }}
                   aria-hidden="true"
                 >
-                  {way.icon}
+                  <Icon name={way.icon as IconName} color={way.color} size={24} />
                 </div>
                 <h3 className="mb-2" style={{ fontFamily: 'var(--font-fraunces), Georgia, serif', fontSize: '1.0625rem', color: '#1A5C2E', fontWeight: 600 }}>
                   {way.title}

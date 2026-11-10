@@ -1,5 +1,6 @@
 import { focusAreas } from '@/lib/data';
 import { Reveal } from '@/components/ui/Reveal';
+import { Icon, type IconName } from '@/components/ui/Icons';
 
 export function WhatWeDo() {
   return (
@@ -53,11 +54,11 @@ export function WhatWeDo() {
                 />
                 {/* Icon */}
                 <div
-                  className="w-12 h-12 rounded-xl flex items-center justify-center text-xl mb-5"
+                  className="w-12 h-12 rounded-xl flex items-center justify-center mb-5"
                   style={{ backgroundColor: area.color + '18' }}
                   aria-hidden="true"
                 >
-                  {area.icon}
+                  <Icon name={area.icon as IconName} color={area.color} />
                 </div>
                 <div
                   className="w-8 h-1 rounded-full mb-4 transition-all duration-300"

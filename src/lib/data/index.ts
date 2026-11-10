@@ -280,12 +280,12 @@ export const stats: Stat[] = [
 ];
 
 export const focusAreas = [
-  { icon: '🌿', title: 'Environment', description: 'Forest conservation, biodiversity, ecological restoration grounded in Meghalayan landscapes.', color: '#259745' },
-  { icon: '🏙️', title: 'Civic Action', description: 'Community mobilisation, clean-up drives, and local advocacy in Shillong\'s wards.', color: '#1A5C2E' },
-  { icon: '📋', title: 'Research', description: 'Evidence-based analysis on urban governance, mobility, waste, and education in the Khasi Hills.', color: '#1F8EC8' },
-  { icon: '📚', title: 'Education', description: 'Curriculum development, school partnerships, and youth-led environmental literacy.', color: '#FEC110' },
-  { icon: '♻️', title: 'Circular Economy', description: 'Plastic recovery, upcycling, and building waste infrastructure that works for Meghalaya.', color: '#F6A225' },
-  { icon: '📜', title: 'Policy', description: 'Policy briefs and research submitted to state government, urban bodies, and educational institutions.', color: '#1A5C2E' },
+  { icon: 'leaf', title: 'Environment', description: 'Forest conservation, biodiversity, ecological restoration grounded in Meghalayan landscapes.', color: '#259745' },
+  { icon: 'community', title: 'Civic Action', description: 'Community mobilisation, clean-up drives, and local advocacy in Shillong\'s wards.', color: '#1A5C2E' },
+  { icon: 'search', title: 'Research', description: 'Evidence-based analysis on urban governance, mobility, waste, and education in the Khasi Hills.', color: '#1F8EC8' },
+  { icon: 'book', title: 'Education', description: 'Curriculum development, school partnerships, and youth-led environmental literacy.', color: '#FEC110' },
+  { icon: 'recycle', title: 'Circular Economy', description: 'Plastic recovery, upcycling, and building waste infrastructure that works for Meghalaya.', color: '#F6A225' },
+  { icon: 'document', title: 'Policy', description: 'Policy briefs and research submitted to state government, urban bodies, and educational institutions.', color: '#1A5C2E' },
 ];
 
 export const symbohResearchAreas = [
