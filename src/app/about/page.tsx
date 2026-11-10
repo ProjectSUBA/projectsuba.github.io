@@ -66,54 +66,41 @@ export default function AboutPage() {
                   fontWeight: 600,
                 }}
               >
-                From <em>Kyrteng</em> to SUBA
+                What SUBA means
               </h2>
               <div
                 className="prose-suba space-y-5"
                 style={{ fontFamily: 'var(--font-inter)', fontSize: '1rem', lineHeight: '1.75', color: '#1A1A1A' }}
               >
                 <p>
-                  In Khasi, <em>kyrteng</em> means to name, and a name is never trivial. It carries
-                  intent, memory, and direction. Before there was a logo, before there was a colour
-                  or a typeface, the founding team sat with one question together: what do we call
-                  this thing we are building?
+                  <strong>SUBA</strong> reads in English as Sustainable Urban and Bioregional
+                  Action. But <em>suba</em> is also a Khasi word, and that is what made the name
+                  feel right.
                 </p>
                 <p>
-                  They considered many names, among them <em>Khuid</em>, the Khasi word for clean.
-                  Each was a different window into the same mission, each a small act of care,
-                  holding English and Khasi in the same hand rather than keeping the two worlds apart.
+                  In everyday Khasi, suba speaks of what is clean, pure, and good. It sits
+                  beside <em>khuid</em>, clean, the way people say <em>khuid and suba</em>
+                  together. To call someone suba is to say they are good.
                 </p>
                 <p>
-                  <strong>SUBA</strong> reads in English as Sustainable Urban and Bioregional Action.
-                  But <em>suba</em> is also a Khasi word, and that is what made it feel right. In
-                  everyday Khasi, suba carries a sense of what is clean, pure, and good. It belongs
-                  beside <em>khuid</em>, clean, the way people say <em>khuid and suba</em> in one
-                  breath. To call someone suba is to say they are good.
+                  The team weighed other names first, among them <em>Khuid</em>, the Khasi word
+                  for clean. SUBA held both the work and the value in a single word, so it stayed.
                 </p>
                 <p>
-                  So the name says one thing in two languages. In English it names the work. In
-                  Khasi it names the value beneath the work, clean and good. Not a compromise
-                  between two worlds, but a convergence. Which is exactly where SUBA operates.
+                  So the name carries its meaning in two languages at once. In English it names
+                  the work. In Khasi it names the value underneath, clean and good. That is
+                  exactly where SUBA operates.
                 </p>
-                <blockquote
-                  className="border-l-4 pl-6 my-8"
-                  style={{ borderColor: '#FEC110', fontStyle: 'italic', color: '#1A5C2E', fontFamily: 'var(--font-fraunces)', fontSize: '1.125rem' }}
-                >
-                  "In Khasi, suba means clean. It means good. We chose a name that already meant what we hoped to become."
-                  <cite className="block mt-2 label-mono not-italic" style={{ color: '#4A4A40', fontSize: '0.6rem', letterSpacing: '0.15em' }}>
-                    THE FOUNDING CONVERSATION, KYRTENG, 2023
-                  </cite>
-                </blockquote>
                 <p>
                   SUBA exists because a small group of people in Shillong decided the hills
-                  deserved better than apathy, and that the way to prove it was to show up —
+                  deserved better than apathy, and that the way to prove it was to show up,
                   again and again, with gloves and saplings, in the rain if necessary, crediting
                   everyone who came along.
                 </p>
                 <p>
                   The brand you'll see on this site grew out of that. It wasn't designed first
                   and then put into practice. It was practised first, then described. Like the
-                  living root bridges of the Khasi Hills — this identity was made together, and
+                  living root bridges of the Khasi Hills, this identity was made together, and
                   it will keep growing.
                 </p>
               </div>
